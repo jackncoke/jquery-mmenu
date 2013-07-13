@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
+		<meta name="author" content="www.frebsite.nl" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+		<meta name="robots" content="noindex, nofollow" />
+
+		<title>jQuery.mmenu &raquo; Color themes</title>
+
+		<link type="text/css" rel="stylesheet" href="../docs.css" />
+		<link type="text/css" rel="stylesheet" href="../../mmenu.css" />
+		<link type="text/css" rel="stylesheet" href="../../mmenu-theme-light.css" />
+		<style type="text/css">
+			.mmenu li div
+			{
+				padding: 20px;
+			}
+			.mmenu li div + div
+			{
+				padding-top: 0;
+			}
+		</style>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../../jquery.mmenu.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('nav#menu').mmenu({
+					searchfield: true
+				});
+				
+				var $link = $('link[href$="mmenu-theme-light.css"]'),
+					_link = $link.attr( 'href' );
+				
+				$link.attr( 'href', '' );
+
+				var $nav = $('#menu');
+
+				$('#bgcolor').change(function() {
+					$nav.css( 'backgroundColor', $(this).val() );
+				});
+				$('#light').change(function() {
+					$link.attr( 'href', ( $(this).is( ':checked' ) ) ? _link : '' );
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="page">
+			<div id="header">
+				<a href="#menu"></a>
+				Color themes
+			</div>
+			<div id="content">
+				<p>Creating a customized theme for the menu is really ease, go ahead and give it a try.</p>
+				<p>Click the menu-button in the header to open the menu and start rolling.</p>
+			</div>
+			<nav id="menu">
+				<ul>
+					<li><a href="index.html">Default theme (#333333)</a></li>
+					<li><a href="light.html">Default light theme (#F6F6F6)</a></li>
+					<li class="Label">Shades of gray</li>
+					<li><a href="gray555.html">Dark gray (#555555)</a></li>
+					<li><a href="gray777.html">Gray (#777777)</a></li>
+					<li class="Selected"><a href="grayccc.html">Gray (#CCCCCC)</a></li>
+					<li><a href="grayeee.html">Light Gray (#EEEEEE)</a></li>
+					<li class="Label">Color themes</li>
+					<li><a href="bordeau.html">Bordeau (#442222)</a></li>
+					<li><a href="army.html">Army (#333322)</a></li>
+					<li><a href="navy.html">Navy (#323849)</a></li>
+					<li class="Label">Themeroller</li>
+					<li class="Selected">
+						<a href="themeroller.html">Try the themeroller!</a>
+						<div>
+							<label for="bgcolor">The main color (any valid CSS color will do):</label><br />
+							<input id="bgcolor" type="text" placeholder="#333" />
+						</div>
+						<div>
+							<input id="light" type="checkbox" value="yes" />
+							<label for="light">This is a light color!</label>
+						</div>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</body>
+</html>
