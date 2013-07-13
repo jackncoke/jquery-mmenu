@@ -1,0 +1,113 @@
+/*
+	CSS for larger buttons in the menu.
+*/
+
+/* items */
+.mmenu li > a,
+.mmenu li > span
+{
+	line-height: 60px;
+}
+
+/* subopen/close */
+.mmenu a.mmenu-subopen
+{
+	width: 60px;
+	height: 60px;
+}
+.mmenu a.mmenu-subopen + a,
+.mmenu a.mmenu-subopen + span
+{
+	padding-right: 65px;
+}
+
+/* vertical submenu */
+.mmenu.mmenu-vertical ul ul
+{
+	padding: 20px 0 20px 20px;
+}
+.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > a.mmenu-subopen + a,
+.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > a.mmenu-subopen + span
+{
+	margin-right: 60px;
+}
+.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > em.mmenu-counter + a.mmenu-subopen + a,
+.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > em.mmenu-counter + a.mmenu-subopen + span
+{
+	margin-right: 95px;
+}
+
+
+/*
+	Menu, submenus, items
+	- Styling (default: dark background)
+*/
+.mmenu *
+{
+	font-size: 16px;
+}
+
+
+/*
+	Labels
+	- Sizing and positioning
+*/
+.mmenu li.mmenu-label
+{
+	line-height: 30px;
+}
+
+
+/*
+	Labels
+	- Styling
+*/
+.mmenu li.mmenu-label
+{
+	font-size: 12px;
+}
+
+
+/*
+	Counters
+	- Sizing and positioning
+*/
+.mmenu em.mmenu-counter
+{
+	right: 60px;
+	top: 20px;
+}
+.mmenu em.mmenu-counter + a.mmenu-subopen
+{
+	padding-left: 45px;
+}
+.mmenu em.mmenu-counter + a.mmenu-subopen + a,
+.mmenu em.mmenu-counter + a.mmenu-subopen + span
+{
+	padding-right: 110px;
+}
+.mmenu em.mmenu-counter + a.mmenu-fullsubopen + a,
+.mmenu em.mmenu-counter + a.mmenu-fullsubopen + span
+{
+	padding-right: 100px;
+}
+
+
+/*
+	Arrows
+	- Sizing and positioning
+*/
+.mmenu a.mmenu-subopen:after,
+.mmenu a.mmenu-subclose:before
+{
+	border-width: 5px;
+}
+.mmenu a.mmenu-subopen:after
+{
+	right: 26px;
+	top: 26px;
+}
+.mmenu a.mmenu-subclose:before
+{
+	top: 45px;
+}

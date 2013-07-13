@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
+		<meta name="author" content="www.frebsite.nl" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+		<meta name="robots" content="noindex, nofollow" />
+
+		<title>jQuery.mmenu &raquo; Examples</title>
+
+		<link type="text/css" rel="stylesheet" href="../docs.css" />
+		<link type="text/css" rel="stylesheet" href="../../mmenu.css" />
+		
+		<style type="text/css">
+			#page
+			{
+				padding-top: 40px;
+			}
+			#header
+			{
+				margin-left: 0px;
+				position: fixed;
+				top: 0;
+				left: 0%;
+				width: 100%;
+
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+
+				-webkit-transition: left 0.5s ease, right 0.5s ease, margin 0.5s ease;
+				-moz-transition: left 0.5s ease, right 0.5s ease, margin 0.5s ease;
+				transition: left 0.5s ease, right 0.5s ease, margin 0.5s ease;
+			}
+			html.mmenu-opened #header
+			{
+				margin-left: 0px;
+				left: 0%;
+			}
+			html.mmenu-opening #header
+			{
+				margin-left: -65px;
+				left: 100%;
+			}
+			@media all and (min-width: 500px) {
+				html.mmenu-opening #header
+				{
+					left: 500px;
+				}
+			}
+		</style>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../../jquery.mmenu.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('nav#menu').mmenu({
+					configuration: {
+						//	For some odd reason, the header won't stay "fixed"
+						//	when using hardware acceleration
+						hardwareAcceleration: false
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="page">
+			<div id="header">
+				<a href="#menu"></a>
+				Examples
+			</div>
+			<div id="content">
+				<p>This is the <strong>fixed header example</strong> demo page.<br />
+					Click the menu-button in the header to open the menu.</p>
+
+				<p><em>Note that this example shows how you could use the plugin, it is not part of the plugin and therefore not widely tested across all mayor browsers.</em></p>
+
+				<p>The header of this page (the gray bar with the title and the menu-button) is fixed. This way it will stay on top of the page and the menu. Try scrolling down before opening the menu.</p>
+				<br />
+				<h4>For testing purposes, here's some dummy text:</h4>
+				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			</div>
+			<nav id="menu">
+				<ul>
+					<li><a href="index.html">Basic example</a></li>
+					<li><a href="horizontal-submenus.html">Horizontal sliding submenus example</a></li>
+					<li><a href="vertical-submenus.html">Vertical submenus example</a></li>
+					<li class="Selected"><a href="fixedheader.html">Fixed header</a></li>
+					<li><a href="iconbar.html">Iconbar</a></li>
+					<li><a href="advanced.html">Advanced example</a></li>
+				</ul>
+			</nav>
+		</div>
+	</body>
+</html>

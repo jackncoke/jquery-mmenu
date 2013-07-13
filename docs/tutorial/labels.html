@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
+		<meta name="author" content="www.frebsite.nl" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+		<meta name="robots" content="noindex, nofollow" />
+
+		<title>jQuery.mmenu &raquo; Tutorial</title>
+
+		<link type="text/css" rel="stylesheet" href="../docs.css" />
+		<link type="text/css" rel="stylesheet" href="../../mmenu.css" />
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../../jquery.mmenu.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('nav#menu').mmenu();
+			});
+		</script>
+	</head>
+	<body>
+		<div id="page">
+			<div id="header">
+				<a href="#menu"></a>
+				Tutorial
+			</div>
+			<div id="content">
+				<h4>Labels</h4>
+				<p>To make an item appear as a label, add the class <code>&quot;Label&quot;</code> to the <code>LI</code>:</p>
+<pre>
+&lt;nav id=&quot;my-menu&quot;&gt;
+   &lt;ul&gt;
+      &lt;li class=&quot;Label&quot;&gt;Website&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;/about/&quot;&gt;About us&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;/contact/&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;
+   &lt;/ul&gt;
+&lt;/nav&gt;
+</pre>
+				<p>If you're using a different classname, for example <code>&quot;title&quot;</code>, you must specify this in the <code>configuration.labelClass</code> option:</p>
+<pre>
+$(&quot;#my-menu&quot;).mmenu({
+   configuration: {
+      labelClass: &quot;title&quot;
+   }
+});
+</pre>
+				<br />
+				<p>Next up: <a href="counters.html">Counters &raquo;</a>
+			</div>
+			<nav id="menu">
+				<ul>
+					<li><a href="page.html">The page</a></li>
+					<li><a href="mainmenu.html">The mainmenu</a></li>
+					<li><a href="submenus.html">Submenus</a></li>
+					<li class="Selected"><a href="labels.html">Labels</a></li>
+					<li><a href="counters.html">Counters</a></li>
+					<li><a href="selected.html">Selected item</a></li>
+					<li><a href="openmenu.html">Open the menu</a></li>
+					<li><a href="closemenu.html">Close the menu</a></li>
+				</ul>
+			</nav>
+		</div>
+	</body>
+</html>
