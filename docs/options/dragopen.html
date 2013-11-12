@@ -35,7 +35,8 @@
 $(&quot;#my-menu&quot;).mmenu({
    dragOpen   : {
       open       : true,
-      threshold  : 100
+      threshold  : 100,
+      pageNode   : &quot;#page&quot;
    }
 });
 </pre>
@@ -50,11 +51,17 @@ $(&quot;#my-menu&quot;).mmenu({
 				<h5>dragOpen.threshold <small><em>(number)</em></small></h5>
 				<p>The minimum amount of pixels to drag before actually opening the menu, less than 50 is not advised.</p>
 				<p>Default value: <code>50</code>.</p>
+
+				<h5>dragOpen.pageNode <small><em>(string, jQuery or function)</em></small></h5>
+				<p>The node on which the user can drag to open the menu.</p>
+				<p>Default value: <code>undefined</code> (the entire page).</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="position.html">position</a></li>
+					<li><a href="zposition.html">zposition</a></li>
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
+					<li><a href="modal.html">modal</a></li>
 					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
 					<li class="Selected"><a href="dragopen.html">dragOpen</a></li>
