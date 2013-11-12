@@ -37,8 +37,8 @@
 </pre>
 				<p>Make sure to wrap the text in either an <code>A</code> or a <code>SPAN</code> element.</p>
 				<br />
-				<h4>Wrap it in a <code>NAV</code></h4>
-				<p>Wrap the entire <code>UL</code> in a <code>NAV</code> element and give the <code>NAV</code> an <code>ID</code>:</p>
+				<h4>Wrap it in a node</h4>
+				<p>Wrap the entire <code>UL</code> in a node (for example a <code>NAV</code> element) and give that node an <code>ID</code>:</p>
 <pre>
 &lt;nav id=&quot;my-menu&quot;&gt;
    &lt;ul&gt;
@@ -48,16 +48,11 @@
    &lt;/ul&gt;
 &lt;/nav&gt;
 </pre>
-				<p>If you're using some other element than a <code>NAV</code>, for example a <code>DIV</code>, you must specify this in the <code>configuration.menuNodetype</code> option:</p>
-<pre>
-$(&quot;#my-menu&quot;).mmenu({
-   configuration: {
-      menuNodetype: &quot;div&quot;
-   }
-});
-</pre>
 				<br />
 				<p>It is not important where in the HTML the <code>NAV</code> is, so you can use the same HTML for your desktop website (where you probably don't use the mmenu-plugin).</p>
+				<br />
+				<h4>Not a menu</h4>
+				<p>If you're using the plugin for purposes other than a menu, simply don't use an <code>UL</code> element.</p>
 				<br />
 				<p>Next up: <a href="submenus.html">Submenus &raquo;</a></p>
 			</div>

@@ -26,48 +26,29 @@
 				Options
 			</div>
 			<div id="content">
-				<h4>dragOpen <small><em>(object)</em></small></h4>
-				<p>A map of options for dragging the menu open.</p>
-				<p>Possible values: an object, <code>true</code> or <code>false</code>.</p>
+				<h4>isMenu <small><em>(boolean)</em></small></h4>
+				<p>Whether or not the menu really is a menu (or &quot;just&quot; a panel with HTML).<br />
+					Setting it to <code>false</code> will prevent the plugin from rearranging the HTML and adding CSS to the HTML.</p>
+				<p>Default value: <code>true</code> if the only node inside it is an <code>UL</code>, false otherwise.</p>
 				<br />
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   dragOpen   : {
-      open       : true,
-      threshold  : 100,
-      pageNode   : &quot;#page&quot;
-   }
+   isMenu: false
 });
 </pre>
-				<br />
-				<p>Note that this will only work if <a href="http://eightmedia.github.io/hammer.js/" traget="_blank">jQuery.hammer.js</a> is included.</p>
-				<br />
-
-				<h5>dragOpen.open <small><em>(boolean)</em></small></h5>
-				<p>Whether or not the menu should open when dragging the page.</p>
-				<p>Default value: <code>false</code>.</p>
-				<p><em>Tip:</em> Hammer.js enables dragging on touch and desktop devices. If you only want to enable dragging the menu open on touchscreens, test for touch support using: <code>$.fn.mmenu.support.touch</code>.</p>
-
-				<h5>dragOpen.threshold <small><em>(number)</em></small></h5>
-				<p>The minimum amount of pixels to drag before actually opening the menu, less than 50 is not advised.</p>
-				<p>Default value: <code>50</code>.</p>
-
-				<h5>dragOpen.pageNode <small><em>(string, jQuery or function)</em></small></h5>
-				<p>The node on which the user can drag to open the menu.</p>
-				<p>Default value: <code>undefined</code> (the entire page).</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="position.html">position</a></li>
 					<li><a href="zposition.html">zposition</a></li>
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
-					<li><a href="ismenu.html">isMenu</a></li>
-					<li><a href="movebackground.html">moveBackground</a></li>
 					<li><a href="modal.html">modal</a></li>
+					<li class="Selected"><a href="ismenu.html">isMenu</a></li>
+					<li><a href="movebackground.html">moveBackground</a></li>
 					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
-					<li class="Selected"><a href="dragopen.html">dragOpen</a></li>
+					<li><a href="dragopen.html">dragOpen</a></li>
 					<li><a href="onclick.html">onClick</a></li>
 					<li><a href="configuration.html">configuration</a></li>
 				</ul>

@@ -6,26 +6,26 @@
 	Menu, submenus, items
 	- Styling (light background)
 */
-.mm-menu
+.mm-is-menu
 {
 	background: #f6f6f6;
 }
-.mm-menu *
+.mm-is-menu *
 {
 	text-shadow: none;
 }
-.mm-menu li
+.mm-is-menu li
 {
 	border-bottom-color: rgba( 255, 255, 255, 0.7 );
 }
-.mm-menu li:after
+.mm-is-menu li:after
 {
 	border-bottom-color: rgba( 0, 0, 0, 0.1 );
 }
-.mm-menu li,
-.mm-menu li > a,
-.mm-menu li > a:hover,
-.mm-menu li > span
+.mm-is-menu li,
+.mm-is-menu li > a,
+.mm-is-menu li > a:hover,
+.mm-is-menu li > span
 {
 	color: rgba( 0, 0, 0, 0.5 );
 	text-decoration: none;
