@@ -28,18 +28,18 @@
 			<div id="content">
 				<p>After the plugin has been fired, a series of custom events are available for the menu. The <code>open</code> and <code>close</code> events come in an infinitive, a participle and a past participle form.<br />
 					The infinitive (e.g. <code>open</code>) can be triggered for controlling the menu manually, the participle (e.g. <code>opening</code>) is triggered when the action is actually executed and the past participle (e.g. <code>opened</code>) is triggered on the completion of the action.</p>
-				<p>All custom events are bound to the <code>.mmenu</code>-namespace, so triggering (or binding a new function to) an event would best be done like this:</p>
+				<p>All custom events are bound to the <code>.mm</code>-namespace, so triggering (or binding a new function to) an event would best be done like this:</p>
 <pre>
-$(&quot;#my-menu&quot;).trigger( &quot;open.mmenu&quot; );
+$(&quot;#my-menu&quot;).trigger( &quot;open.mm&quot; );
 $(&quot;#my-menu&quot;).on(
-   &quot;opening.mmenu&quot;,
+   &quot;opening.mm&quot;,
    function()
    {
       alert( &quot;The menu will now be opened.&quot; );
    }
 );
 $(&quot;#my-menu&quot;).on(
-   &quot;opened.mmenu&quot;,
+   &quot;opened.mm&quot;,
    function()
    {
       alert( &quot;The menu has just been opened.&quot; );
@@ -57,6 +57,8 @@ $(&quot;#my-menu&quot;).on(
 					<li><a href="toggle.html">toggle</a></li>
 
 					<li class="Label">Other events:</li>
+					<li><a href="setpage.html">setPage</a></li>
+					<li><a href="setselected.html">setSelected</a></li>
 					<li>
 						<span>Events for submenus</span>
 						<ul>

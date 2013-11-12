@@ -33,22 +33,23 @@
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
    configuration: {
-      clone			       : false,
+      clone                : false,
       hardwareAcceleration : true,
       preventTabbing       : true,
       selectedClass        : &quot;Selected&quot;,
       labelClass           : &quot;Label&quot;,
       counterClass         : &quot;Counter&quot;,
+      pageSelector         : undefined,
       pageNodetype         : &quot;div&quot;,
       menuNodetype         : &quot;nav&quot;,
-      slideDuration        : 500
+      transitionDuration   : 500
    }
 });
 </pre>
 				<br />
 				<h5>configuration.clone <small><em>(boolean)</em></small></h5>
 				<p>Whether or not to use a clone of the original <code>&lt;nav&gt;</code>.<br />
-					If <code>true</code>, all <code>ID</code>-attributes will be prefixed with <code>&quot;mmenu-&quot;</code>.</p>
+					If <code>true</code>, all <code>ID</code>-attributes in the clone will be prefixed with <code>&quot;mm-&quot;</code>.</p>
 				<p>Default value: <code>false</code>.</p>
 
 				<h5>configuration.hardwareAcceleration <small><em>(boolean)</em></small></h5>
@@ -72,6 +73,10 @@ $(&quot;#my-menu&quot;).mmenu({
 				<p>The classname on the <code>EM</code>s that function as a counter.</p>
 				<p>Default value: <code>&quot;Counter&quot;</code>.</p>
 
+				<h5>configuration.pageSelector <small><em>(string)</em></small></h5>
+				<p>The jQuery selector to find the page.</p>
+				<p>If <code>undefined</code>, it will be set to <code>&quot;&gt; &quot; + configuration.pageNodetype</code>.</p>
+
 				<h5>configuration.pageNodetype <small><em>(string)</em></small></h5>
 				<p>The nodetype of the page.</p>
 				<p>Default value: <code>&quot;div&quot;</code>.</p>
@@ -80,7 +85,7 @@ $(&quot;#my-menu&quot;).mmenu({
 				<p>The nodetype of the menu.</p>
 				<p>Default value: <code>&quot;nav&quot;</code>.</p>
 
-				<h5>configuration.slideDuration <small><em>(number)</em></small></h5>
+				<h5>configuration.transitionDuration <small><em>(number)</em></small></h5>
 				<p>The duration of the animations (in milliseconds).</p>
 				<p>This value should match the duration of the CSS-transitions.</p>
 				<p>Default value: <code>500</code>.</p>
@@ -91,6 +96,7 @@ $(&quot;#my-menu&quot;).mmenu({
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
 					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
+					<li><a href="dragopen.html">dragOpen</a></li>
 					<li><a href="onclick.html">onClick</a></li>
 					<li class="Selected"><a href="configuration.html">configuration</a></li>
 				</ul>

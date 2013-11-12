@@ -28,7 +28,12 @@
 			<div id="content">
 				<h4>Close the menu</h4>
 				<p>By default, the menu only closes after clicking on the still visible part of the page.<br />
-					Trigger the <code>close</code> custom event to close the menu manually:</p>
+					The plugin also automatically binds a <code>click</code> event to every <code>A</code> that links to the page:</p>
+<pre>
+&lt;a href=&quot;#my-page&quot;&gt;Close the menu&lt;/a&gt;
+</pre>
+				<h4>Close it manually</h4>
+				<p>Trigger the <code>close</code> custom event to close the menu manually:</p>
 <pre>
 $(&quot;#my-menu&quot;).trigger(&quot;close&quot;);
 </pre>

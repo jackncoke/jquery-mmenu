@@ -26,13 +26,13 @@
 				Events
 			</div>
 			<div id="content">
-				<h4>toggle</h4>
-				<p>Trigger this event to toggle the menu between being opened and closed.</p>
+				<h4>setSelected</h4>
+				<p>Trigger this event (on a <code>LI</code>) to manually make it visibly &quot;selected&quot;.</p>
 				<br />
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu();
-$(&quot;#my-menu&quot;).trigger( &quot;toggle.mm&quot; );
+$(&quot;#my-menu li:first&quot;).trigger( &quot;setSelected.mm&quot; );
 </pre>
 
 			</div>
@@ -41,11 +41,11 @@ $(&quot;#my-menu&quot;).trigger( &quot;toggle.mm&quot; );
 					<li class="Label">Events for the menu:</li>
 					<li><a href="open.html">open</a></li>
 					<li><a href="close.html">close</a></li>
-					<li class="Selected"><a href="toggle.html">toggle</a></li>
+					<li><a href="toggle.html">toggle</a></li>
 
 					<li class="Label">Other events:</li>
 					<li><a href="setpage.html">setPage</a></li>
-					<li><a href="setselected.html">setSelected</a></li>
+					<li class="Selected"><a href="setselected.html">setSelected</a></li>
 					<li>
 						<span>Events for submenus</span>
 						<ul>

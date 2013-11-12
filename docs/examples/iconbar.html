@@ -22,46 +22,25 @@
 				margin: 0;
 				overflow-x: hidden;
 			}
-			.mmenu-page
+			.mm-page
 			{
 				background: inherit;
 				min-height: 100%;
 				position: relative;
 				margin-left: 50px;
 			}
-			html.mmenu-left.mmenu-opened .mmenu-page
+			html.mm-left.mm-opened .mm-page
 			{
 				margin-left: 50px;
 			}
-			html.mmenu-left.mmenu-opening .mmenu-page
+			html.mm-left.mm-opening .mm-page
 			{
 				margin-left: -65px;
 			}
-
-			.mmenu.mmenu-left.mmenu-horizontal
+			.mm-menu
 			{
-				display: block;
-				width: 100%;
+				display: block !important;
 			}
-			.mmenu.mmenu-left.mmenu-horizontal ul
-			{
-				width: 100%;
-			}
-			.mmenu.mmenu-left.mmenu-horizontal.mmenu-opened
-			{
-				width: 500%;
-			}
-			.mmenu.mmenu-left.mmenu-horizontal.mmenu-opened ul
-			{
-				width: 20%;
-			}
-			@media all and (min-width: 500px) {
-				.mmenu.mmenu-left.mmenu-horizontal.mmenu-opened
-				{
-					width: 2500px;
-				}
-			}
-
 			#menu .icon
 			{
 				margin: 0 15px 0 -2px;
@@ -79,7 +58,7 @@
 				$('a#open-icon').click(function( e ) {
 					e.stopImmediatePropagation();
 					e.preventDefault();
-					$('nav#menu').trigger( 'toggle.mmenu' );
+					$('nav#menu').trigger( 'toggle.mm' );
 				});
 
 				$('nav#menu').mmenu();
@@ -112,12 +91,15 @@
 					<li><a href="vertical-submenus.html">
 						<i class="icon icon-white icon-arrow-down"></i>
 						Vertical submenus example</a></li>
-					<li><a href="fixedheader.html">
-						<i class="icon icon-white icon-magnet"></i>
-						Fixed header</a></li>
+					<li><a href="onepage.html">
+						<i class="icon icon-white icon-resize-vertical"></i>
+						One page scrolling example</a></li>
 					<li class="Selected"><a href="iconbar.html">
 						<i class="icon icon-white icon-info-sign"></i>
 						Iconbar</a></li>
+					<li><a href="dragopen.html">
+						<i class="icon icon-white icon-hand-up"></i>
+						Drag/swipe the menu open</a></li>
 					<li><a href="advanced.html">
 						<i class="icon icon-white icon-star"></i>
 						Advanced example</a></li>

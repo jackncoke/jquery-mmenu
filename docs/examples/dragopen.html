@@ -12,11 +12,12 @@
 		<link type="text/css" rel="stylesheet" href="../../mmenu.css" />
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
 		<script type="text/javascript" src="../../jquery.mmenu.min.js"></script>
 		<script type="text/javascript">
 			$(function() {
 				$('nav#menu').mmenu({
-					slidingSubmenus: false
+					dragOpen: true
 				});
 			});
 		</script>
@@ -28,33 +29,20 @@
 				Examples
 			</div>
 			<div id="content">
-				<p>This is the <strong>vertical submenus example</strong> demo page.<br />
-					Click the menu-button in the header to open the menu.</p>
-
-				<p>One of the menu-items has a submenu and a sub-submenu. All submenus will expand below their parent item.</p>
+				<p>This is the <strong>dragOpen example</strong> demo page.<br />
+					Try dragging the page from left to right to open the menu.</p>
+				<p><em>Note:</em> Although this feature was intended for touch-devices, it might not work as well as expected due to browser specific behavior.<br />
+					<strong>Use with caution and test thoroughly!</strong></p>
+				<p><em>Note:</em> This will only work if <a href="http://eightmedia.github.io/hammer.js/" traget="_blank">jQuery.hammer.js</a> is included.</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="index.html">Basic example</a></li>
 					<li><a href="horizontal-submenus.html">Horizontal sliding submenus example</a></li>
-					<li class="Selected">
-						<a href="vertical-submenus.html">Vertical submenus example</a>
-						<ul>
-							<li><a href="#">First sub-item</a></li>
-							<li>
-								<a href="#">Second sub-item</a>
-								<ul>
-									<li><a href="#">First sub-sub-item</a></li>
-									<li><a href="#">Second sub-sub-item</a></li>
-									<li><a href="#">Third sub-sub-item</a></li>
-								</ul>
-							</li>
-							<li><a href="#">Third sub-item</a></li>
-						</ul>
-					</li>
+					<li><a href="vertical-submenus.html">Vertical submenus example</a></li>
 					<li><a href="onepage.html">One page scrolling example</a></li>
 					<li><a href="iconbar.html">Iconbar</a></li>
-					<li><a href="dragopen.html">Drag/swipe the menu open</a></li>
+					<li class="Selected"><a href="dragopen.html">Drag/swipe the menu open</a></li>
 					<li><a href="advanced.html">Advanced example</a></li>
 				</ul>
 			</nav>

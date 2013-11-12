@@ -3,36 +3,36 @@
 */
 
 /* items */
-.mmenu li > a,
-.mmenu li > span
+.mm-menu li > a,
+.mm-menu li > span
 {
 	line-height: 60px;
 }
 
 /* subopen/close */
-.mmenu a.mmenu-subopen
+.mm-menu a.mm-subopen
 {
 	width: 60px;
 	height: 60px;
 }
-.mmenu a.mmenu-subopen + a,
-.mmenu a.mmenu-subopen + span
+.mm-menu a.mm-subopen + a,
+.mm-menu a.mm-subopen + span
 {
 	padding-right: 65px;
 }
 
 /* vertical submenu */
-.mmenu.mmenu-vertical ul ul
+.mm-menu.mm-vertical ul ul
 {
 	padding: 20px 0 20px 20px;
 }
-.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > a.mmenu-subopen + a,
-.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > a.mmenu-subopen + span
+.mm-menu.mm-vertical li.mm-opened.mm-selected > a.mm-subopen + a,
+.mm-menu.mm-vertical li.mm-opened.mm-selected > a.mm-subopen + span
 {
 	margin-right: 60px;
 }
-.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > em.mmenu-counter + a.mmenu-subopen + a,
-.mmenu.mmenu-vertical li.mmenu-opened.mmenu-selected > em.mmenu-counter + a.mmenu-subopen + span
+.mm-menu.mm-vertical li.mm-opened.mm-selected > em.mm-counter + a.mm-subopen + a,
+.mm-menu.mm-vertical li.mm-opened.mm-selected > em.mm-counter + a.mm-subopen + span
 {
 	margin-right: 95px;
 }
@@ -42,7 +42,7 @@
 	Menu, submenus, items
 	- Styling (default: dark background)
 */
-.mmenu *
+.mm-menu *
 {
 	font-size: 16px;
 }
@@ -52,7 +52,7 @@
 	Labels
 	- Sizing and positioning
 */
-.mmenu li.mmenu-label
+.mm-menu li.mm-label
 {
 	line-height: 30px;
 }
@@ -62,7 +62,7 @@
 	Labels
 	- Styling
 */
-.mmenu li.mmenu-label
+.mm-menu li.mm-label
 {
 	font-size: 12px;
 }
@@ -72,22 +72,22 @@
 	Counters
 	- Sizing and positioning
 */
-.mmenu em.mmenu-counter
+.mm-menu em.mm-counter
 {
 	right: 60px;
 	top: 20px;
 }
-.mmenu em.mmenu-counter + a.mmenu-subopen
+.mm-menu em.mm-counter + a.mm-subopen
 {
 	padding-left: 45px;
 }
-.mmenu em.mmenu-counter + a.mmenu-subopen + a,
-.mmenu em.mmenu-counter + a.mmenu-subopen + span
+.mm-menu em.mm-counter + a.mm-subopen + a,
+.mm-menu em.mm-counter + a.mm-subopen + span
 {
 	padding-right: 110px;
 }
-.mmenu em.mmenu-counter + a.mmenu-fullsubopen + a,
-.mmenu em.mmenu-counter + a.mmenu-fullsubopen + span
+.mm-menu em.mm-counter + a.mm-fullsubopen + a,
+.mm-menu em.mm-counter + a.mm-fullsubopen + span
 {
 	padding-right: 100px;
 }
@@ -97,17 +97,17 @@
 	Arrows
 	- Sizing and positioning
 */
-.mmenu a.mmenu-subopen:after,
-.mmenu a.mmenu-subclose:before
+.mm-menu a.mm-subopen:after,
+.mm-menu a.mm-subclose:before
 {
 	border-width: 5px;
 }
-.mmenu a.mmenu-subopen:after
+.mm-menu a.mm-subopen:after
 {
 	right: 26px;
 	top: 26px;
 }
-.mmenu a.mmenu-subclose:before
+.mm-menu a.mm-subclose:before
 {
 	top: 45px;
 }

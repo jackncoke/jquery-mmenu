@@ -26,13 +26,13 @@
 				Events
 			</div>
 			<div id="content">
-				<h4>toggle</h4>
-				<p>Trigger this event to toggle the menu between being opened and closed.</p>
+				<h4>setPage</h4>
+				<p>Trigger this event to manually tell the plugin what node it should consider to be the &quot;page&quot;.</p>
 				<br />
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu();
-$(&quot;#my-menu&quot;).trigger( &quot;toggle.mm&quot; );
+$(&quot;#my-menu&quot;).trigger( &quot;setPage.mm&quot;, [ $(&quot;#my-page&quot;) ] );
 </pre>
 
 			</div>
@@ -41,10 +41,10 @@ $(&quot;#my-menu&quot;).trigger( &quot;toggle.mm&quot; );
 					<li class="Label">Events for the menu:</li>
 					<li><a href="open.html">open</a></li>
 					<li><a href="close.html">close</a></li>
-					<li class="Selected"><a href="toggle.html">toggle</a></li>
+					<li><a href="toggle.html">toggle</a></li>
 
 					<li class="Label">Other events:</li>
-					<li><a href="setpage.html">setPage</a></li>
+					<li class="Selected"><a href="setpage.html">setPage</a></li>
 					<li><a href="setselected.html">setSelected</a></li>
 					<li>
 						<span>Events for submenus</span>

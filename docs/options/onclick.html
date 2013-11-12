@@ -34,24 +34,43 @@
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
    onClick   : {
-      close         : true,
-      delayPageload : true,
-      blockUI       : false
+      close             : true,
+      setSelected       : true,
+      setLocationHref   : null,
+      delayLocationHref : true,
+      blockUI           : null,
+      callback          : null
    }
 });
 </pre>
 				<br />
-				<h5>onClick.close <small><em>(boolean)</em></small></h5>
+				<p>Note that most boolean-options in the <code>onClick</code> object can also be a function that returns a boolean. Inside this function <code>this</code> refers to the clicked link.</p>
+				<br />
+
+				<h5>onClick.close <small><em>(boolean/function)</em></small></h5>
 				<p>Whether or not the menu should close after clicking a link inside it.</p>
 				<p>Default value: <code>true</code>.</p>
 
-				<h5>delayPageload <small><em>(boolean/number)</em></small></h5>
-				<p>Whether or not to delay loading the new page until after the menu has closed. If a number, this will be the amout of milliseconds the loading is delayed.</p>
+				<h5>onClick.setSelected <small><em>(boolean/function)</em></small></h5>
+				<p>Whether or not the clicked link should be visibly &quot;selected&quot;.</p>
 				<p>Default value: <code>true</code>.</p>
 
-				<h5>blockUI <small><em>(boolean)</em></small></h5>
+				<h5>onClick.setLocationHref <small><em>(boolean/function)</em></small></h5>
+				<p>Whether or not the <code>window.location.href</code> should be set to the href of the clicked link.</p>
+				<p>Default value: <code>false</code> if the href is equal to or starts with a hash (#), <code>true</code> otherwise.</p>
+
+				<h5>onClick.delayLocationHref <small><em>(boolean/function)</em></small></h5>
+				<p>Whether or not to delay setting the <code>window.location.href</code> until after the menu has closed.</p>
+				<p>Default value: <code>true</code>.</p>
+
+				<h5>onClick.blockUI <small><em>(boolean/function)</em></small></h5>
 				<p>Whether or not to block the user interface while loading the new page.</p>
-				<p>Default value: <code>false</code>.</p>
+				<p>Default value: <code>false</code> if the href is equal to or starts with a hash (#), <code>true</code> otherwise.</p>
+
+				<h5>onClick.callback <small><em>(function)</em></small></h5>
+				<p>A function to call after the menu has closed. Inside this function, <code>this</code> refers to the clicked link.</p>
+				<p>Default value: <code>null</code>.</p>
+
 			</div>
 			<nav id="menu">
 				<ul>
@@ -59,6 +78,7 @@ $(&quot;#my-menu&quot;).mmenu({
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
 					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
+					<li><a href="dragopen.html">dragOpen</a></li>
 					<li class="Selected"><a href="onclick.html">onClick</a></li>
 					<li><a href="configuration.html">configuration</a></li>
 				</ul>

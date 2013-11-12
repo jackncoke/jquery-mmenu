@@ -1,5 +1,5 @@
 /*	
- *	jQuery mmenu 2.2.3
+ *	jQuery mmenu 3.0.6
  *	
  *	Copyright (c) 2013 Fred Heusschen
  *	www.frebsite.nl
@@ -45,26 +45,29 @@
 
 				//	STORE VARIABLES
 				var $menu 		= $(this),
-//					$_dummy		= null,
-					_opened 	= false,
 					_direction	= ( opts.slidingSubmenus ) ? 'horizontal' : 'vertical';
 
 				$allMenus = $allMenus.add( $menu );
 
+				$menu
+					.data( _d.options, opts )
+					.data( _d.opened, false );
+
 				_serialnr++;
 
 
-				//	INIT PAGE, MENU, LINKS & LABELS
+				//	INIT PAGE & MENU
 				$page = _initPage( $page, opts.configuration );
-				$blck = _initBlocker( $blck, $menu, opts.configuration );
 				$menu = _initMenu( $menu, opts.position, opts.configuration );
+				$blck = _initBlocker( $blck, $menu, opts.configuration );
 
 				_initSubmenus( $menu, _direction, _serialnr );
-				_initLinks( $menu, opts.onClick, opts.configuration );
-				_initOpenClose( $menu, $page, opts.slidingSubmenus );
+				_initLinks( $menu, opts.onClick, opts.configuration, opts.slidingSubmenus );
+				_initOpenClose( $menu, $page, opts.configuration );
 
 				$.fn.mmenu.counters( $menu, opts.counters, opts.configuration );
-				$.fn.mmenu.search( $menu, opts.searchfield );
+				$.fn.mmenu.search( $menu, opts.searchfield, opts.configuration );
+				$.fn.mmenu.dragOpen( $menu, opts.dragOpen, opts.configuration );
 
 
 				//	BIND EVENTS
@@ -84,31 +87,39 @@
 					.on( _e.toggle,
 						function( e )
 						{
-							return $menu.triggerHandler( _opened ? _e.close : _e.open );
+							return $menu.triggerHandler( $menu.data( _d.opened ) ? _e.close : _e.open );
 						}
 					)
 					.on( _e.open,
 						function( e )
 						{
-							if ( _opened )
+							if ( $menu.data( _d.opened ) )
 							{
 								e.stopImmediatePropagation();
 								return false;
 							}
-							_opened = true;
+							$menu.data( _d.opened, true );
 							return openMenu( $menu, opts, opts.configuration );
 						}
 					)
 					.on( _e.close,
 						function( e )
 						{
-							if ( !_opened )
+							if ( !$menu.data( _d.opened ) )
 							{
 								e.stopImmediatePropagation();
 								return false;
 							}
-							_opened = false;
+							$menu.data( _d.opened, false );
 							return closeMenu( $menu, opts, opts.configuration );
+						}
+					)
+					.off( _e.setPage )
+					.on( _e.setPage,
+						function( e, $p )
+						{
+							$page = _initPage( $p, opts.configuration );
+							_initOpenClose( $menu, $page, opts.configuration );
 						}
 					);
 
@@ -132,7 +143,7 @@
 						.on( _e.close,
 							function( e )
 							{
-								return closeSubmenuHorizontal( $(this), $menu, opts );
+								return closeSubmenuHorizontal( $(this), $menu, opts, opts.configuration );
 							}
 						);
 				}
@@ -164,15 +175,16 @@
 			}
 		);
 	};
-
-
 	$.fn.mmenu.defaults = {
 		position		: 'left',
 		slidingSubmenus	: true,
 		onClick			: {
 			close				: true,
-			delayPageload		: true,
-			blockUI				: false
+			setSelected			: true,
+//			blockUI				: null,
+//			callback			: null,
+//			setLocationHref		: null,
+			delayLocationHref	: true
 		},
 		configuration	: {
 			preventTabbing		: true,
@@ -182,7 +194,11 @@
 			counterClass		: 'Counter',
 			pageNodetype		: 'div',
 			menuNodetype		: 'nav',
-			slideDuration		: 500
+			transitionDuration	: 400,
+			dragOpen			: {
+				pageMaxDistance		: 500,
+				pageMinVisible		: 65
+			}
 		}
 	};
 
@@ -243,7 +259,7 @@
 				_searchText += ', > span';
 			}
 
-			$i.off( _e.keyup )
+			$i.off( _e.keyup + ' ' + _e.change )
 				.on( _e.keyup,
 					function( e )
 					{
@@ -251,6 +267,12 @@
 						{
 							$i.trigger( _e.search );
 						}
+					}
+				)
+				.on( _e.change,
+					function( e )
+					{
+						$i.trigger( _e.search );
 					}
 				);
 
@@ -343,6 +365,7 @@
 		noResults		: 'No results found.'
 	};
 
+
 	$.fn.mmenu.counters = function( $m, opts, conf )
 	{
 		//	Extend options
@@ -420,6 +443,165 @@
 	};
 
 
+	$.fn.mmenu.dragOpen = function( $m, opts, conf )
+	{
+		if ( !$.fn.hammer )
+		{
+			return false;
+		}
+
+
+		//	Extend options
+		if ( typeof opts == 'boolean' )
+		{
+			opts = {
+				open: opts
+			};
+		}
+		if ( typeof opts != 'object' )
+		{
+			opts = {};
+		}
+		opts = $.extend( true, {}, $.fn.mmenu.dragOpen.defaults, opts );
+
+
+		if ( opts.open )
+		{
+			var _setup = false,
+				_direction = false,
+				_distance = 0,
+				_maxDistance = 0;
+
+			var pOpts = $m.data( _d.options );
+
+			//	Set up variables
+			switch( pOpts.position )
+			{
+				case 'left':
+					var drag = {
+						events 		: _e.dragleft + ' ' + _e.dragright,
+						open_dir 	: 'right',
+						close_dir 	: 'left',
+						delta		: 'deltaX',
+						negative 	: false
+					};
+					break;
+
+				case 'right':
+					var drag = {
+						events 		: _e.dragleft + ' ' + _e.dragright,
+						open_dir 	: 'left',
+						close_dir 	: 'right',
+						delta		: 'deltaX',
+						negative 	: true
+					};
+					break;
+
+				case 'top':
+					var drag = {
+						events		: _e.dragup + ' ' + _e.dragdown,
+						open_dir 	: 'down',
+						close_dir 	: 'up',
+						delta		: 'deltaY',
+						negative 	: false
+					};
+					break;
+
+				case 'bottom':
+					var drag = {
+						events 		: _e.dragup + ' ' + _e.dragdown,
+						open_dir 	: 'up',
+						close_dir 	: 'down',
+						delta		: 'deltaY',
+						negative 	: true
+					};
+					break;
+			}
+
+			//	Bind events
+			$page
+				.hammer()
+				.on( drag.events + ' ' + _e.dragend,
+					function( e )
+					{
+						e.gesture.preventDefault();
+				        e.stopPropagation();
+					}
+				)
+				.on( drag.events,
+					function( e )
+					{
+
+						var new_distance = drag.negative
+							? -e.gesture[ drag.delta ]
+							: e.gesture[ drag.delta ];
+
+						_direction = ( new_distance > _distance )
+							? drag.open_dir
+							: drag.close_dir;
+
+						_distance = new_distance;
+
+						if ( _distance > opts.threshold )
+						{
+							if ( !_setup )
+							{								
+								if ( $html.hasClass( _c.opened ) )
+								{
+									return;
+								}
+								_setup = true;
+								$m.data( _d.opened, true );
+								openMenu_setup( $m, pOpts, conf );
+								$html.addClass( _c.dragging );
+
+								switch( pOpts.position )
+								{
+									case 'left':
+									case 'right':
+										_maxDistance = minMax( $(window).width(), 0, conf.dragOpen.pageMaxDistance ) - conf.dragOpen.pageMinVisible;
+										break;
+									default:
+										_maxDistance = $(window).height() - conf.dragOpen.pageMinVisible;
+										break;
+								}
+							}
+							if ( _setup )
+							{
+								$page.css( 'margin-' + pOpts.position, minMax( _distance, 0, _maxDistance ) );
+							}
+						}
+					}
+				)
+				.on( _e.dragend,
+					function( e )
+					{
+						if ( _setup )
+						{
+				        	_setup = false;
+							$page.css( 'margin-' + pOpts.position, '' );
+							$html.removeClass( _c.dragging );
+
+							if ( _direction == drag.open_dir )
+							{
+						        openMenu_finish( $m, pOpts, conf );
+							}
+							else
+							{
+								$m.data( _d.opened, false );
+								closeMenu( $m, pOpts, conf );
+							}
+						}
+				    }
+				);
+		}
+	};
+	$.fn.mmenu.dragOpen.defaults = {
+		open		: false,
+		threshold	: 50
+	};
+
+
 	$.fn.mmenu.useOverflowScrollingFallback = function( use )
 	{
 		if ( $html )
@@ -458,7 +640,7 @@
 		})(),
 
 		transition: (function() {
-			return 'transition' in document.createElement('p').style;
+			return 'transition' in document.createElement( 'div' ).style;
 		})()
 	};
 
@@ -506,6 +688,7 @@
 			o = {};
 		}
 
+
 		//	DEPRECATED
 		if ( typeof o.addCounters != 'undefined' )
 		{
@@ -520,6 +703,27 @@
 			o.onClick = {
 				close: o.closeOnClick
 			};
+		}
+		if ( typeof o.onClick != 'undefined' )
+		{
+			if ( typeof o.onClick.delayPageload != 'undefined' )
+			{
+				$.fn.mmenu.deprecated( 'onClick.delayPageload-option', 'onClick.delayLocationHref-option' );
+				o.onClick.delayLocationHref = o.onClick.delayPageload;
+			}
+			if ( typeof o.onClick.delayLocationHref == 'number' )
+			{
+				$.fn.mmenu.deprecated( 'a number for the onClick.delayLocationHref-option', 'true/false' );
+				o.onClick.delayLocationHref = ( o.onClick.delayLocationHref > 0 ) ? true : false;
+			}
+		}
+		if ( typeof o.configuration != 'undefined' )
+		{
+			if ( typeof o.configuration.slideDuration != 'undefined' )
+			{
+				$.fn.mmenu.deprecated( 'configuration.slideDuration-option', 'configuration.transitionDuration-option' );
+				o.configuration.transitionDuration = o.configuration.slideDuration;
+			}
 		}
 		//	/DEPRECATED
 
@@ -541,12 +745,11 @@
 		o = $.extend( true, {}, $.fn.mmenu.defaults, o );
 
 
-		//	extend onClick
-		if ( typeof o.onClick.delayPageload == 'boolean' )
+		//	set pageSelector
+		if ( typeof o.configuration.pageSelector != 'string' )
 		{
-			o.onClick.delayPageload = ( o.onClick.delayPageload ) ? o.configuration.slideDuration : 0;
+			o.configuration.pageSelector = '> ' + o.configuration.pageNodetype;
 		}
-
 
 		//	Degration
 		if ( $.fn.mmenu.useOverflowScrollingFallback() )
@@ -560,6 +763,7 @@
 					break;
 			}
 		}
+
 		return o;
 	}
 
@@ -572,47 +776,59 @@
 		$allMenus = $();
 
 		_c = {
-			page		: cls( 'page' ),
-			blocker		: cls( 'blocker' ),
-			blocking	: cls( 'blocking' ),
-			opened 		: cls( 'opened' ),
-			opening 	: cls( 'opening' ),
-			submenu		: cls( 'submenu' ),
-			subopen		: cls( 'subopen' ),
-			fullsubopen	: cls( 'fullsubopen' ),
-			subclose	: cls( 'subclose' ),
-			subopened	: cls( 'subopened' ),
-			subopening	: cls( 'subopening' ),
-			subtitle	: cls( 'subtitle' ),
-			selected	: cls( 'selected' ),
-			label 		: cls( 'label' ),
-			noresult	: cls( 'noresult' ),
-			noresults	: cls( 'noresults' ),
-			nosubresult	: cls( 'nosubresult' ),
-			search 		: cls( 'search' ),
-			counter		: cls( 'counter' ),
-			accelerated	: cls( 'accelerated' ),
+			page				: cls( 'page' ),
+			blocker				: cls( 'blocker' ),
+			blocking			: cls( 'blocking' ),
+			opened 				: cls( 'opened' ),
+			opening 			: cls( 'opening' ),
+			submenu				: cls( 'submenu' ),
+			subopen				: cls( 'subopen' ),
+			fullsubopen			: cls( 'fullsubopen' ),
+			subclose			: cls( 'subclose' ),
+			subopened			: cls( 'subopened' ),
+			subopening			: cls( 'subopening' ),
+			subtitle			: cls( 'subtitle' ),
+			selected			: cls( 'selected' ),
+			label 				: cls( 'label' ),
+			noresult			: cls( 'noresult' ),
+			noresults			: cls( 'noresults' ),
+			nosubresult			: cls( 'nosubresult' ),
+			search 				: cls( 'search' ),
+			counter				: cls( 'counter' ),
+			accelerated			: cls( 'accelerated' ),
+			dragging			: cls( 'dragging' ),
 			nooverflowscrolling : cls( 'no-overflowscrolling' )
 		};
 		_e = {
-			toggle		: evt( 'toggle' ),
-			open		: evt( 'open' ),
-			close		: evt( 'close' ),
-			search		: evt( 'search' ),
-			reset		: evt( 'reset' ),
-			keyup		: evt( 'keyup' ),
-			keydown		: evt( 'keydown' ),
-			count		: evt( 'count' ),
-			resize		: evt( 'resize' ),
-			opening		: evt( 'opening' ),
-			opened		: evt( 'opened' ),
-			closing		: evt( 'closing' ),
-			closed		: evt( 'closed' ),
-			touchstart	: evt( 'touchstart' ),
-			mousedown	: evt( 'mousedown' ),
-			click		: evt( 'click' )
+			toggle			: evt( 'toggle' ),
+			open			: evt( 'open' ),
+			close			: evt( 'close' ),
+			search			: evt( 'search' ),
+			reset			: evt( 'reset' ),
+			keyup			: evt( 'keyup' ),
+			change			: evt( 'change' ),
+			keydown			: evt( 'keydown' ),
+			count			: evt( 'count' ),
+			resize			: evt( 'resize' ),
+			opening			: evt( 'opening' ),
+			opened			: evt( 'opened' ),
+			closing			: evt( 'closing' ),
+			closed			: evt( 'closed' ),
+			setPage			: evt( 'setPage' ),
+			setSelected		: evt( 'setSelected' ),
+			transitionend	: evt( 'transitionend' ),
+			touchstart		: evt( 'touchstart' ),
+			mousedown		: evt( 'mousedown' ),
+			click			: evt( 'click' ),
+			dragleft		: evt( 'dragleft' ),
+			dragright		: evt( 'dragright' ),
+			dragup			: evt( 'dragup' ),
+			dragdown		: evt( 'dragdown' ),
+			dragend			: evt( 'dragend' )
 		};
 		_d = {
+			opened		: dta( 'opened' ),
+			options		: dta( 'options' ),
 			parent		: dta( 'parent' ),
 			sub			: dta( 'sub' ),
 			style		: dta( 'style' ),
@@ -627,22 +843,37 @@
 	{
 		if ( !$p )
 		{
-			$p = $('> ' + conf.pageNodetype, $body);
+			$p = $(conf.pageSelector, $body);
 			if ( $p.length > 1 )
 			{
 				$p = $p.wrapAll( '<' + conf.pageNodetype + ' />' ).parent();
 			}
-			$p.addClass( _c.page );
 		}
+
+		$p.addClass( _c.page );
 		return $p;
 	}
 
 	function _initMenu( $m, position, conf )
 	{
+		//	Strip whitespace
+		$m.contents().each(
+			function()
+			{
+				if ( $(this)[ 0 ].nodeType == 3 )
+				{
+					$(this).remove();
+				}
+			}
+		);
+
+		//	Wrap in correct node if needed
 		if ( !$m.is( conf.menuNodetype ) )
 		{
 			$m = $( '<' + conf.menuNodetype + ' />' ).append( $m );
 		}
+
+		//	Clone if needed
 		if ( conf.clone )
 		{
 			$m = $m.clone( true );
@@ -654,9 +885,9 @@
 			);
 		}
 
-//		$_dummy = $( '<div class="mmenu-dummy" />' ).insertAfter( $m ).hide();
+		//	Prepend to body
 		$m.prependTo( 'body' )
-			.addClass( cls( '' ).slice( 0, -1 ) )
+			.addClass( cls( 'menu' ) )
 			.addClass( cls( position ) );
 
 		//	Refactor selected class
@@ -707,8 +938,10 @@
 		if ( direction == 'horizontal' )
 		{
 			//	Add opened-classes
-			$('li.' + _c.selected, $m)
-				.parents( 'li.' + _c.selected ).removeClass( _c.selected )
+			var $selected = $('li.' + _c.selected, $m);
+			$selected
+				.add( $selected.parents( 'li' ) )
+				.parents( 'li' ).removeClass( _c.selected )
 				.end().each(
 					function()
 					{
@@ -756,67 +989,90 @@
 		);
 		return $b;
 	}
-	function _initLinks( $m, onClick, conf )
+	function _initLinks( $m, onClick, conf, horizontal )
 	{
-		if ( onClick.close )
-		{
-			var $a = $('a', $m)
-				.not( '.' + _c.subopen )
-				.not( '.' + _c.subclose );
 
-			click( $a,
+		//	set selected event
+		var $lis = $('li', $m)
+			.off( _e.setSelected )
+			.on( _e.setSelected,
 				function()
 				{
-					var $t = $(this),
-						href = $t.attr( 'href' );
-	
-					$m.trigger( _e.close );
-					$a.parent().removeClass( _c.selected );
-					$t.parent().addClass( _c.selected );
+					$lis.removeClass( _c.selected );
+					$(this).addClass( _c.selected );
+				}
+			);
 
-					if ( onClick.blockUI && href.slice( 0, 1 ) != '#' )
+		//	linking
+		var $a = $('a', $m)
+			.not( '.' + _c.subopen )
+			.not( '.' + _c.subclose )
+			.not( '[target="_blank"]' );
+
+		click( $a,
+			function()
+			{
+				var $t = $(this),
+					href = $t.attr( 'href' );
+
+				//	set selected item
+				if ( boolOrFn( onClick.setSelected, $t ) )
+				{
+					$t.parent().trigger( _e.setSelected );
+				}
+
+				//	block UI
+				if ( boolOrFn( onClick.blockUI, $t, href.slice( 0, 1 ) != '#' ) )
+				{
+					$html.addClass( _c.blocking );
+				}
+
+				//	callback + loaction.href + close menu
+				var callback			= typeof onClick.callback == 'function',
+					callbackFn			= function() { onClick.callback.call( $t[ 0 ] ); }
+					close				= boolOrFn( onClick.close, $t ),
+					delayLocationHref	= boolOrFn( onClick.delayLocationHref, $t ),
+					setLocationHref 	= boolOrFn( onClick.setLocationHref, $t, href != '#' ),
+					setLocationHrefFn	= function() { window.location.href = href; };
+
+				var closing = false;
+
+				//	close: use transitionend
+				if ( close )
+				{
+					if ( setLocationHref )
 					{
-						$html.addClass( _c.blocking );
+						if ( delayLocationHref )
+						{
+							transitionend( $page, setLocationHrefFn, conf.transitionDuration );
+						}
+						else
+						{
+							setLocationHrefFn();
+						}
 					}
-
-					if ( href != '#' )
+					if ( callback )
 					{
-						setTimeout(
-							function()
-							{
-								window.location.href = href;
-							}, onClick.delayPageload
-						);
+						transitionend( $page, callbackFn, conf.transitionDuration );
+					}
+					closing = $m.triggerHandler( _e.close );
+				}
+
+				//	not close or not closing: no transitionend
+				if ( !close || !closing )
+				{
+					if ( setLocationHref )
+					{
+						setLocationHrefFn();
+					}
+					if ( callback )
+					{
+						callbackFn();
 					}
 				}
-			);
-		}
-	}
-	function _initOpenClose( $m, $p, horizontal )
-	{
-		//	toggle menu
-		var id = $m.attr( 'id' );
-		if ( id && id.length )
-		{
-			click( 'a[href="#' + id + '"]',
-				function()
-				{
-					$m.trigger( _e.toggle );
-				}
-			);
-		}
+			}
+		);
 
-		//	close menu
-		var id = $p.attr( 'id' );
-		if ( id && id.length )
-		{
-			click( 'a[href="#' + id + '"]',
-				function()
-				{
-					$m.trigger( _e.close );
-				}
-			);
-		}
 
 		//	open/close horizontal submenus
 		if ( horizontal )
@@ -854,10 +1110,54 @@
 			);
 		}
 	}
+	function _initOpenClose( $m, $p, c )
+	{
+		//	toggle menu
+		var id = $m.attr( 'id' );
+		if ( id && id.length )
+		{
+			if ( c.clone )
+			{
+				id = uncls( id );
+			}
+			click( $('a[href="#' + id + '"]', $p),
+				function()
+				{
+					$m.trigger( _e.toggle );
+				}
+			);
+		}
+
+		//	close menu
+		var id = $p.attr( 'id' );
+		if ( id && id.length )
+		{
+			click( $('a[href="#' + id + '"]', $p),
+				function()
+				{
+					$m.trigger( _e.close );
+				}
+			);
+		}
+	}
 
 	function openMenu( $m, o, c )
 	{
-		var _scrollTop = findScrollTop();
+		openMenu_setup( $m, o, c );
+
+		//	small timeout to ensure the "opened" class did its job
+		setTimeout(
+			function()
+			{
+				openMenu_finish( $m, o, c );
+			}, 10
+		);
+
+		return 'open';
+	}
+	function openMenu_setup( $m, o, c )
+	{
+				var _scrollTop = findScrollTop();
 
 		$allMenus.not( $m ).trigger( _e.close );
 
@@ -910,27 +1210,21 @@
 			.addClass( cls( o.position ) );
 
 		$page.scrollTop( _scrollTop );
-
-		//	small timeout to ensure the "opened" class did its job
-		setTimeout(
+	}
+	function openMenu_finish( $m, o, c )
+	{
+		//	callback
+		transitionend( $page,
 			function()
 			{
-				//	callback
-				transitionend( $page,
-					function()
-					{
-						//	opened
-						$m.trigger( _e.opened );
-					}, c.slideDuration
-				);
-
-				//	opening
-				$html.addClass( _c.opening );
-				$m.trigger( _e.opening );
-			}, 10
+				//	opened
+				$m.trigger( _e.opened );
+			}, c.transitionDuration
 		);
 
-		return 'open';
+		//	opening
+		$html.addClass( _c.opening );
+		$m.trigger( _e.opening );
 	}
 	function closeMenu( $m, o, c )
 	{
@@ -951,11 +1245,11 @@
 				{
 					$scrollTopNode.scrollTop( $page.data( _d.scrollTop ) );
 				}
-				
+
 				//	closed
 				$m.trigger( _e.closed );
 
-			}, c.slideDuration
+			}, c.transitionDuration
 		);
 
 		//	closing
@@ -987,24 +1281,24 @@
 		}
 		return 'open';
 	}
-	function closeSubmenuHorizontal( $submenu, $m, o )
+	function closeSubmenuHorizontal( $submenu, $m, o, c )
 	{
 		if ( !$submenu.hasClass( _c.opened ) )
 		{
 			return false;
 		}
 
-		//	callback
-		transitionend( $m,
-			function()
-			{
-				$submenu.removeClass( _c.opened );
-			}, o.configuration.slideDuration
-		);
-
 		var $parent = $submenu.data( _d.parent );
 		if ( $parent )
 		{
+			//	callback
+			transitionend( $m,
+				function()
+				{
+					$submenu.removeClass( _c.opened );
+				}, c.transitionDuration
+			);
+
 			$parent.parent().removeClass( _c.subopening );
 		}
 		return 'close';
@@ -1043,16 +1337,40 @@
 		return ( $scrollTopNode ) ? $scrollTopNode.scrollTop() : 0;
 	}
 
-	function transitionend( $m, fn, duration )
+	function transitionend( $e, fn, duration )
 	{
 		if ( $.fn.mmenu.support.transition )
 		{
-			$m.one( 'transitionend', fn );
+			$e.one( _e.transitionend, fn );
 		}
 		else
 		{
 			setTimeout( fn, duration );
 		}
+	}
+	function minMax( val, min, max )
+	{
+		if ( val < min )
+		{
+			val = min;
+		}
+		if ( val > max )
+		{
+			val = max;
+		}
+		return val;
+	}
+	function boolOrFn( o, $e, d )
+	{
+		if ( typeof o == 'function' )
+		{
+			return o.call( $e );
+		}
+		if ( typeof o == 'undefined' && typeof d != 'undefined' )
+		{
+			return d;
+		}
+		return o;
 	}
 	function click( $b, fn, onTouchStart, add )
 	{
@@ -1084,15 +1402,23 @@
 
 	function cls( c )
 	{
-		return 'mmenu-' + c;
+		return 'mm-' + c;
+	}
+	function uncls( c )
+	{
+		if ( c.slice( 0, 3 ) == 'mm-' )
+		{
+			c = c.slice( 3 );
+		}
+		return c;
 	}
 	function evt( e )
 	{
-		return e + '.mmenu';
+		return e + '.mm';
 	}
 	function dta( d )
 	{
-		return 'mmenu-' + d;
+		return 'mm-' + d;
 	}
 
 })( jQuery );
