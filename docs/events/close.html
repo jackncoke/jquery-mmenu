@@ -32,7 +32,7 @@
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu();
-$(&quot;#my-menu&quot;).trigger( &quot;close.mmenu&quot; );
+$(&quot;#my-menu&quot;).trigger( &quot;close.mm&quot; );
 </pre>
 				<br />
 				<h5>closing</h5>
@@ -42,7 +42,7 @@ $(&quot;#my-menu&quot;).trigger( &quot;close.mmenu&quot; );
 <pre>
 $(&quot;#my-menu&quot;).mmenu();
 $(&quot;#my-menu&quot;).on(
-   &quot;closing.mmenu&quot;,
+   &quot;closing.mm&quot;,
    function()
    {
       alert( &quot;The menu will now be closed.&quot; );
@@ -57,7 +57,7 @@ $(&quot;#my-menu&quot;).on(
 <pre>
 $(&quot;#my-menu&quot;).mmenu();
 $(&quot;#my-menu&quot;).on(
-   &quot;closed.mmenu&quot;,
+   &quot;closed.mm&quot;,
    function()
    {
       alert( &quot;The menu has just been closed.&quot; );
@@ -74,6 +74,8 @@ $(&quot;#my-menu&quot;).on(
 					<li><a href="toggle.html">toggle</a></li>
 
 					<li class="Label">Other events:</li>
+					<li><a href="setpage.html">setPage</a></li>
+					<li><a href="setselected.html">setSelected</a></li>
 					<li>
 						<span>Events for submenus</span>
 						<ul>

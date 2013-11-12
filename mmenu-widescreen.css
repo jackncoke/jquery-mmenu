@@ -5,14 +5,22 @@
 */
 
 /* positioning and sizing */
+html, body
+{
+	height: 100%;
+}
 body
 {
 	position: relative;
 }
-.mmenu-page
+#mm-blocker
+{
+	display: none !important;
+}
+.mm-page
 {
 	box-shadow: none !important;
-	background-color: inherit;
+	background: inherit;
 	width: 70% !important;
 	min-height: 100%;
 	margin: 0 !important;
@@ -25,49 +33,61 @@ body
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-.mmenu
+
+
+/* forcing transitionend */
+html.mm-opened .mm-page
+{
+	border-color: rgba( 0, 0, 0, 0 );
+}
+html.mm-opening .mm-page
+{
+	border-color: rgba( 1, 1, 1, 0 );
+}
+
+.mm-menu
 {
 	position: fixed;
 	z-index: 0;
 }
-.mmenu > ul
+.mm-menu > ul
 {
 	padding-right: 0 !important;
 	padding-left: 0 !important;
 }
-.mmenu.mmenu-vertical
+.mm-menu.mm-vertical
 {
 	width: 30% !important;
 }
-.mmenu.mmenu-horizontal
+.mm-menu.mm-horizontal
 {
 	width: 150% !important;
 }
-.mmenu.mmenu-right.mmenu-horizontal
+.mm-menu.mm-right.mm-horizontal
 {
 	left: 0;
 	right: auto;
 }
-.mmenu a.mmenu-subopen
+.mm-menu a.mm-subopen
 {
 	right: 0;
 }
-.mmenu.mmenu-right a.mmenu-subclose:before
+.mm-menu.mm-right a.mm-subclose:before
 {
 	left: 20px;
 }
-.mmenu em.mmenu-counter
+.mm-menu em.mm-counter
 {
 	right: 40px;
 }
-.mmenu div.mmenu-search
+.mm-menu div.mm-search
 {
 	width: 20% !important;
 	padding: 10px !important;
 }
 
-.mmenu:first-child,
-.mmenu.mmenu-opened
+.mm-menu:first-child,
+.mm-menu.mm-opened
 {
 	display: block;
 }

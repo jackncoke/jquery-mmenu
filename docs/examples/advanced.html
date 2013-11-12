@@ -18,7 +18,7 @@
 			//	The menu on the left
 			$(function() {
 				$('nav#menu-left').mmenu({
-					searchfield: true
+					searchfield	: true
 				});
 			});
 
@@ -27,14 +27,14 @@
 			$(function() {
 
 				$('nav#menu-right').mmenu({
-					position: 'right',
-					counters: true,
-					searchfield: true
+					position	: 'right',
+					counters	: true,
+					searchfield	: true
 				});
 
 				//	Click a menu-item
 				var $confirm = $('#confirmation');
-				$('#menu-right a').not( '.mmenu-subopen' ).not( '.mmenu-subclose' ).bind(
+				$('#menu-right a').not( '.mm-subopen' ).not( '.mm-subclose' ).bind(
 					'click.example',
 					function( e )
 					{
@@ -58,7 +58,7 @@
 				<h4>Sliding menus for your website</h4>
 				<p>Create an unlimited amount of app look-alike sliding menus, all with an unlimited amount of submenus.</p>
 				<h4>Try it!</h4>
-				<p>Click the menu-button in the header to open the menu on the left. Or click the friends-button in the header to open a second menu on the right.</p>
+				<p>Click the menu-button in the header to open the menu on the left. Or click the contacts-button in the header to open a second menu on the right.</p>
 				<h4>Search</h4>
 				<p>Both menus have a search field prepended to them, so go ahead and try typing something in the search fields.</p>
 			</div>
@@ -67,8 +67,9 @@
 					<li><a href="index.html">Basic example</a></li>
 					<li><a href="horizontal-submenus.html">Horizontal sliding submenus example</a></li>
 					<li><a href="vertical-submenus.html">Vertical submenus example</a></li>
-					<li><a href="fixedheader.html">Fixed header</a></li>
+					<li><a href="onepage.html">One page scrolling example</a></li>
 					<li><a href="iconbar.html">Iconbar</a></li>
+					<li><a href="dragopen.html">Drag/swipe the menu open</a></li>
 					<li class="Selected"><a href="advanced.html">Advanced example</a></li>
 				</ul>
 			</nav>

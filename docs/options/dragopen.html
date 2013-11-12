@@ -26,14 +26,30 @@
 				Options
 			</div>
 			<div id="content">
-				<p>The jQuery.mmenu-plugin provides a few options for customizing your menu. The default option values can be overridden by passing new values to the method.</p>
+				<h4>dragOpen <small><em>(object)</em></small></h4>
+				<p>A map of options for dragging the menu open.</p>
+				<p>Possible values: an object, <code>true</code> or <code>false</code>.</p>
+				<br />
+				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   // options go here...
+   dragOpen   : {
+      open       : true,
+      threshold  : 100
+   }
 });
 </pre>
 				<br />
-				<p>Click the menu-button in the header to open the menu and have a look at the options.</p>
+				<p>Note that this will only work if <a href="http://eightmedia.github.io/hammer.js/" traget="_blank">jQuery.hammer.js</a> is included.</p>
+				<br />
+
+				<h5>dragOpen.open <small><em>(boolean)</em></small></h5>
+				<p>Whether or not the menu should open when dragging the page.</p>
+				<p>Default value: <code>false</code>.</p>
+
+				<h5>dragOpen.threshold <small><em>(number)</em></small></h5>
+				<p>The minimum amount of pixels to drag before actually opening the menu, less than 50 is not advised.</p>
+				<p>Default value: <code>50</code>.</p>
 			</div>
 			<nav id="menu">
 				<ul>
@@ -41,7 +57,7 @@ $(&quot;#my-menu&quot;).mmenu({
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
 					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
-					<li><a href="dragopen.html">dragOpen</a></li>
+					<li class="Selected"><a href="dragopen.html">dragOpen</a></li>
 					<li><a href="onclick.html">onClick</a></li>
 					<li><a href="configuration.html">configuration</a></li>
 				</ul>

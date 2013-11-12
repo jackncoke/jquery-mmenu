@@ -14,11 +14,15 @@
 		<link type="text/css" rel="stylesheet" href="../mmenu-theme-light.css" media="all and (min-width: 900px)" />
 		<style type="text/css">
 			@media all and (min-width: 900px) {
+				html, body {
+					height: 100%;
+				}
 				#menu {
 					background: #eee;
 				}
 				#page {
 					border-left: 1px solid #ccc;
+					min-height: 100%;
 				}
 				/* hide open-button */
 				a[href="#menu"]
@@ -44,17 +48,18 @@
 			</div>
 			<div id="content">
 				<p>If you are reading this, you probably just downloaded the jQuery.mmenu-plugin and are eager to learn more about it.<br />
-					If so, these documentation pages could not be more helpfull. They include examples, the full documentation for the configuration options and custom events, some color themes and even a tutorial.</p>
+					If so, these documentation pages could not be more helpfull. They include examples, a tutorial, the full documentation for the configuration options and custom events, some color themes and even a demo on how to implement it with jQuery Mobile.</p>
 				<p>This page has the mmenu-widescreen.css file included. Therefor, if your screen is wider than 900px, the menu will always be opened.<br />
 					If not, click the menu-button in the header to open the menu.</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="examples/index.html">Examples</a></li>
+					<li><a href="tutorial/index.html">Tutorial</a></li>
 					<li><a href="options/index.html">Options</a></li>
 					<li><a href="events/index.html">Custom events</a></li>
 					<li><a href="themes/index.html">Color themes</a></li>
-					<li><a href="tutorial/index.html">Tutorial</a></li>
+					<li><a href="jqmobile/index.html">jQuery Mobile implementation</a></li>
 				</ul>
 			</nav>
 		</div>
