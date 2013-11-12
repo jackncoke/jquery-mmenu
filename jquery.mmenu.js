@@ -1,5 +1,5 @@
 /*	
- *	jQuery mmenu 3.1.4
+ *	jQuery mmenu 3.2.6
  *	
  *	Copyright (c) 2013 Fred Heusschen
  *	www.frebsite.nl
@@ -28,7 +28,7 @@
 	var _c, _e, _d;
 
 
-	$.fn.mmenu = function( opts )
+	$.fn.mmenu = function( o )
 	{
 		//	First time plugin is fired
 		if ( !$wndw )
@@ -37,43 +37,45 @@
 		}
 
 		//	Extend options
-		opts = extendOptions( opts );
+		o = extendOptions( o );
 
 		return this.each(
 			function()
 			{
 
 				//	STORE VARIABLES
-				var $menu 		= $(this),
-					_direction	= ( opts.slidingSubmenus ) ? 'horizontal' : 'vertical';
-
+				var $menu = $(this);
 				$allMenus = $allMenus.add( $menu );
+
+				var opts = extendOptions( o, $menu );
 
 				$menu
 					.data( _d.options, opts )
 					.data( _d.opened, false );
 
+				var _direction = ( opts.slidingSubmenus ) ? 'horizontal' : 'vertical';
+
 				_serialnr++;
 
 
 				//	INIT PAGE & MENU
-				$page = _initPage( $page, opts.configuration );
-				$menu = _initMenu( $menu, opts.position, opts.zposition, opts.configuration );
-				$blck = _initBlocker( $blck, $menu, opts.configuration );
+				$page = _initPage( 			$page, opts.configuration );
+				$menu = _initMenu( 			$menu, opts, opts.configuration );
+				$blck = _initBlocker( 		$blck, $menu, opts.configuration );
 
-				_initSubmenus( $menu, _direction, _serialnr );
-				_initLinks( $menu, opts.onClick, opts.configuration, opts.slidingSubmenus );
-				_initOpenClose( $menu, $page, opts.configuration );
-
-				$.fn.mmenu.counters( $menu, opts.counters, opts.configuration );
-				$.fn.mmenu.search( $menu, opts.searchfield, opts.configuration );
-
-				//	For now: dragging open is only supported if the menu is "under" the page.
-				//	TODO: change dragging method to work with zposition "front" and "next".
-				if ( opts.zposition == 'back' )
+				if ( opts.isMenu )
 				{
-					$.fn.mmenu.dragOpen( $menu, opts.dragOpen, opts.configuration );
+					_initSubmenus( 			$menu, _direction, _serialnr );
+					_initLinks( 			$menu, opts.onClick, opts.configuration, opts.slidingSubmenus );
 				}
+				_initOpenClose( 			$menu, $page, opts.configuration );
+
+				if ( opts.isMenu )
+				{
+					$.fn.mmenu.counters( 	$menu, opts.counters, opts.configuration );
+					$.fn.mmenu.search( 		$menu, opts.searchfield, opts.configuration );
+				}
+				$.fn.mmenu.dragOpen( 		$menu, opts.dragOpen, opts.configuration );
 
 
 				//	BIND EVENTS
@@ -88,7 +90,7 @@
 						}
 					);
 
-				//	menu-events
+				//	Menu-events
 				$menu
 					.on( _e.toggle,
 						function( e )
@@ -104,7 +106,6 @@
 								e.stopImmediatePropagation();
 								return false;
 							}
-							$menu.data( _d.opened, true );
 							return openMenu( $menu, opts, opts.configuration );
 						}
 					)
@@ -116,7 +117,6 @@
 								e.stopImmediatePropagation();
 								return false;
 							}
-							$menu.data( _d.opened, false );
 							return closeMenu( $menu, opts, opts.configuration );
 						}
 					)
@@ -124,13 +124,14 @@
 					.on( _e.setPage,
 						function( e, $p )
 						{
-							$page = _initPage( $p, opts.configuration );
-							_initOpenClose( $menu, $page, opts.configuration );
+							$page = _initPage( 		$p, opts.configuration );
+							_initOpenClose( 		$menu, $page, opts.configuration );
+							$.fn.mmenu.dragOpen( 	$menu, opts.dragOpen, opts.configuration );
 						}
 					);
 
 
-				//	submenu-events
+				//	Submenu-events
 				if ( _direction == 'horizontal' )
 				{
 					$subs
@@ -143,7 +144,7 @@
 						.on( _e.open,
 							function( e )
 							{
-								return openSubmenuHorizontal( $(this), opts );
+								return openSubmenuHorizontal( $(this), $menu, opts );
 							}
 						)
 						.on( _e.close,
@@ -184,6 +185,7 @@
 	$.fn.mmenu.defaults = {
 		position		: 'left',
 		zposition		: 'back',
+		moveBackground	: true,
 		slidingSubmenus	: true,
 		modal			: false,
 		onClick			: {
@@ -201,7 +203,6 @@
 			labelClass			: 'Label',
 			counterClass		: 'Counter',
 			pageNodetype		: 'div',
-			menuNodetype		: 'nav',
 			transitionDuration	: 400,
 			dragOpen			: {
 				pageMaxDistance		: 500,
@@ -211,7 +212,10 @@
 	};
 
 
-	$.fn.mmenu.search = function( $m, opts )
+	/*
+		SEARCH
+	*/
+	$.fn.mmenu.search = function( $m, opts, conf )
 	{
 
 		//	Extend options
@@ -239,7 +243,7 @@
 		//	Add the field
 		if ( opts.add )
 		{
-			var $s = $( '<div class="' + _c.search + '" />' ).prependTo( $m );
+			var $s = $( '<div class="' + _c.search + '" />' ).prependTo( $m.find( '> .' + _c.inner ) );
 			$s.append( '<input placeholder="' + opts.placeholder + '" type="text" autocomplete="off" />' );
 
 			if ( opts.noResults )
@@ -308,8 +312,10 @@
 						}
 						else
 						{
-							query = $i.val().toLowerCase();
+							query = $i.val();
 						}
+						query = query.toLowerCase();
+
 	
 						//	search through items
 						$items.add( $labels ).addClass( _c.noresult );
@@ -374,6 +380,9 @@
 	};
 
 
+	/*
+		COUNTERS
+	*/
 	$.fn.mmenu.counters = function( $m, opts, conf )
 	{
 		//	Extend options
@@ -451,6 +460,9 @@
 	};
 
 
+	/*
+		DRAGOPEN
+	*/
 	$.fn.mmenu.dragOpen = function( $m, opts, conf )
 	{
 
@@ -474,10 +486,10 @@
 
 		if ( opts.open )
 		{
-			var _setup = false,
-				_direction = false,
-				_distance = 0,
-				_maxDistance = 0;
+			var _setup 			= false,
+				_direction 		= false,
+				_distance 		= 0,
+				_maxDistance 	= 0;
 
 			var pOpts = $m.data( _d.options );
 
@@ -564,7 +576,6 @@
 									return;
 								}
 								_setup = true;
-								$m.data( _d.opened, true );
 								openMenu_setup( $m, pOpts, conf );
 								$html.addClass( _c.dragging );
 
@@ -579,10 +590,20 @@
 										break;
 								}
 							}
-							if ( _setup )
+						}
+						if ( _setup )
+						{
+							var $drag = $page;
+							switch ( pOpts.zposition )
 							{
-								$page.css( 'margin-' + pOpts.position, minMax( _distance, 0, _maxDistance ) );
+								case 'front':
+									$drag = $m;
+									break;
+								case 'next':
+									$drag = $drag.add( $m );
+									break;
 							}
+							$drag.css( 'margin-' + pOpts.position, minMax( _distance, 10, _maxDistance ) );
 						}
 					}
 				)
@@ -592,7 +613,19 @@
 						if ( _setup )
 						{
 				        	_setup = false;
-							$page.css( 'margin-' + pOpts.position, '' );
+				        	
+				        	var $drag = $page;
+				        	switch ( pOpts.zposition )
+							{
+								case 'front':
+									$drag = $m;
+									break;
+								case 'next':
+									$drag = $drag.add( $m );
+									break;
+							}
+							$drag.css( 'margin-' + pOpts.position, '' );
+
 							$html.removeClass( _c.dragging );
 
 							if ( _direction == drag.open_dir )
@@ -601,7 +634,6 @@
 							}
 							else
 							{
-								$m.data( _d.opened, false );
 								closeMenu( $m, pOpts, conf );
 							}
 						}
@@ -616,6 +648,86 @@
 	};
 
 
+	/*
+		SUPPORT
+	*/
+	(function() {
+
+		var wd = window.document,
+			ua = window.navigator.userAgent;
+
+		var _touch 				= 'ontouchstart' in wd,
+			_overflowscrolling	= 'WebkitOverflowScrolling' in wd.documentElement.style,
+			_transition			= (function() {
+				var s = document.createElement( 'div' ).style;
+			    if ( 'webkitTransition' in s )
+			    {
+			        return 'webkitTransition';  
+			    }
+			    return 'transition' in s;
+			})(),
+			_oldAndroidBrowser	= (function() {
+				if ( ua.indexOf( 'Android' ) >= 0 )
+				{
+					return 2.4 > parseFloat( ua.slice( ua.indexOf( 'Android' ) +8 ) );
+				}
+				return false;
+			})();
+
+		$.fn.mmenu.support = {
+
+			touch: _touch,
+			transition: _transition,
+			oldAndroidBrowser: _oldAndroidBrowser,
+
+			overflowscrolling: (function() {
+				if ( !_touch )
+				{
+					return true;
+				}
+				if ( _overflowscrolling )
+				{
+					return true;
+				}
+				if( _oldAndroidBrowser )
+				{
+					return false;
+				}
+				return true;
+			})(),
+
+			iPhoneAddressBar: (function() {
+				if ( ua.match( /iPhone/i ) || ua.match( /iPod/i ) )
+				{
+	
+					//	Chrome
+					if ( ua.match( 'CriOS' ) )
+					{
+						return false;
+					}
+					//	Fullscreen web app
+					if ( window.navigator.standalone )
+					{
+						return false;
+					}
+					//	Viewport height=device-height
+					var c = $('meta[name="viewport"]').attr( 'content' );
+					if ( c && c.indexOf( 'height=device-height' ) > -1 )
+					{
+						return false;
+					}
+					
+					return true;
+				}
+				return false;
+			})()
+		};
+	})();
+
+
+	/*
+		BROWSER SPECIFIC FIXES
+	*/
 	$.fn.mmenu.useOverflowScrollingFallback = function( use )
 	{
 		if ( $html )
@@ -632,45 +744,28 @@
 			return use;
 		}
 	};
-
-
-	$.fn.mmenu.support = {
-
-		touch: (function() {
-			return 'ontouchstart' in window.document;
-		})(),
-
-		overflowscrolling: (function() {
-			return 'WebkitOverflowScrolling' in window.document.documentElement.style;
-		})(),
-
-		oldAndroid: (function() {
-			var ua = navigator.userAgent;
-			if ( ua.indexOf( 'Android' ) >= 0 )
-			{
-				return 2.4 > parseFloat( ua.slice( ua.indexOf( 'Android' ) +8 ) );
-			}
-			return false;
-		})(),
-
-		transition: (function() {
-			var s = document.createElement( 'div' ).style;
-		    if ( 'webkitTransition' in s )
-		    {
-		        return 'webkitTransition';  
-		    }
-		    return 'transition' in s;
-		})()
-	};
-
-
-	$.fn.mmenu.debug = function( msg )
+	$.fn.mmenu.useIphoneAddressbarFix = function( use )
 	{
-		if ( typeof console != 'undefined' && typeof console.log != 'undefined' )
+		if ( $html )
 		{
-			console.log( 'MMENU: ' + msg );
+			if ( typeof use == 'boolean' )
+			{
+				$html[ use ? 'addClass' : 'removeClass' ]( _c.iphoneaddressbar );
+			}
+			return $html.hasClass( _c.iphoneaddressbar );
+		}
+		else
+		{
+			_useIphoneAddressbarFix = use;
+			return use;
 		}
 	};
+
+
+	/*
+		DEBUG
+	*/
+	$.fn.mmenu.debug = function( msg ) {};
 	$.fn.mmenu.deprecated = function( depr, repl )
 	{
 		if ( typeof console != 'undefined' && typeof console.warn != 'undefined' )
@@ -682,12 +777,24 @@
 
 	//	Global vars
 	var _serialnr = 0,
-		_useOverflowScrollingFallback = $.fn.mmenu.support.touch && !$.fn.mmenu.support.overflowscrolling;
+//		_useOverflowScrollingFallback = $.fn.mmenu.support.touch && !$.fn.mmenu.support.overflowscrolling && $.fn.mmenu.support.oldAndroidBrowser,
+		_useOverflowScrollingFallback = !$.fn.mmenu.support.overflowscrolling,
+		_useIphoneAddressbarFix = $.fn.mmenu.support.iPhoneAddressBar;
 
-
-	function extendOptions( o )
+	function extendOptions( o, $m )
 	{
-		//	string value only
+		if ( $m )
+		{
+			if ( typeof o.isMenu != 'boolean' )
+			{
+				var $c = $m.children();
+				o.isMenu = ( $c.length == 1 && $c.is( 'ul' ) );
+			}
+			return o;
+		}
+
+
+		//	String value only
 		if ( typeof o == 'string' )
 		{
 			switch( o )
@@ -709,20 +816,6 @@
 
 
 		//	DEPRECATED
-		if ( typeof o.addCounters != 'undefined' )
-		{
-			$.fn.mmenu.deprecated( 'addCounters-option', 'counters.add-option' );
-			o.counters = {
-				add: o.addCounters
-			};
-		}
-		if ( typeof o.closeOnClick != 'undefined' )
-		{
-			$.fn.mmenu.deprecated( 'closeOnClick-option', 'onClick.close-option' );
-			o.onClick = {
-				close: o.closeOnClick
-			};
-		}
 		if ( typeof o.onClick != 'undefined' )
 		{
 			if ( typeof o.onClick.delayPageload != 'undefined' )
@@ -747,7 +840,7 @@
 		//	/DEPRECATED
 
 
-		//	extend onClick
+		//	Extend onClick
 		if ( typeof o.onClick == 'boolean' )
 		{
 			o.onClick = {
@@ -760,11 +853,11 @@
 		}
 
 
-		//	extend from defaults
+		//	Extend from defaults
 		o = $.extend( true, {}, $.fn.mmenu.defaults, o );
 
 
-		//	set pageSelector
+		//	Set pageSelector
 		if ( typeof o.configuration.pageSelector != 'string' )
 		{
 			o.configuration.pageSelector = '> ' + o.configuration.pageNodetype;
@@ -795,10 +888,14 @@
 		$allMenus = $();
 
 		_c = {
+			menu				: cls( 'menu' ),
+			ismenu				: cls( 'is-menu' ),
+			inner				: cls( 'inner' ),
 			page				: cls( 'page' ),
 			blocker				: cls( 'blocker' ),
 			blocking			: cls( 'blocking' ),
 			modal				: cls( 'modal' ),
+			background			: cls( 'background' ),
 			opened 				: cls( 'opened' ),
 			opening 			: cls( 'opening' ),
 			submenu				: cls( 'submenu' ),
@@ -806,7 +903,6 @@
 			fullsubopen			: cls( 'fullsubopen' ),
 			subclose			: cls( 'subclose' ),
 			subopened			: cls( 'subopened' ),
-			subopening			: cls( 'subopening' ),
 			subtitle			: cls( 'subtitle' ),
 			selected			: cls( 'selected' ),
 			label 				: cls( 'label' ),
@@ -817,7 +913,8 @@
 			counter				: cls( 'counter' ),
 			accelerated			: cls( 'accelerated' ),
 			dragging			: cls( 'dragging' ),
-			nooverflowscrolling : cls( 'no-overflowscrolling' )
+			nooverflowscrolling : cls( 'no-overflowscrolling' ),
+			iphoneaddressbar	: cls( 'iphone-addressbar' )
 		};
 		_e = {
 			toggle			: evt( 'toggle' ),
@@ -840,6 +937,7 @@
 			touchstart		: evt( 'touchstart' ),
 			mousedown		: evt( 'mousedown' ),
 			click			: evt( 'click' ),
+			scroll			: evt( 'scroll' ),
 			dragleft		: evt( 'dragleft' ),
 			dragright		: evt( 'dragright' ),
 			dragup			: evt( 'dragup' ),
@@ -857,6 +955,7 @@
 		};
 
 		$.fn.mmenu.useOverflowScrollingFallback( _useOverflowScrollingFallback );
+		$.fn.mmenu.useIphoneAddressbarFix( _useIphoneAddressbarFix );
 	}
 
 	function _initPage( $p, conf )
@@ -866,6 +965,7 @@
 			$p = $(conf.pageSelector, $body);
 			if ( $p.length > 1 )
 			{
+				$.fn.mmenu.debug( 'Multiple nodes found for the page-node, all nodes are wrapped in one <div>.' );
 				$p = $p.wrapAll( '<' + conf.pageNodetype + ' />' ).parent();
 			}
 		}
@@ -874,7 +974,7 @@
 		return $p;
 	}
 
-	function _initMenu( $m, position, zposition, conf )
+	function _initMenu( $m, opts, conf )
 	{
 		//	Strip whitespace
 		$m.contents().each(
@@ -886,12 +986,6 @@
 				}
 			}
 		);
-
-		//	Wrap in correct node if needed
-		if ( !$m.is( conf.menuNodetype ) )
-		{
-			$m = $( '<' + conf.menuNodetype + ' />' ).append( $m );
-		}
 
 		//	Clone if needed
 		if ( conf.clone )
@@ -905,21 +999,36 @@
 			);
 		}
 
-		//	Prepend to body
-		$m.prependTo( 'body' )
-			.addClass( cls( 'menu' ) )
-			.addClass( cls( position ) );
-
-		if ( zposition != 'back' )
+		//	Add inner div
+		if ( $m.find( '> .' + _c.inner ).length == 0 )
 		{
-			$m.addClass( cls( zposition ) );
+			$m.wrapInner( '<div class="' + _c.inner + '" />' );
 		}
 
-		//	Refactor selected class
-		$('li.' + conf.selectedClass, $m).removeClass( conf.selectedClass ).addClass( _c.selected );
+		//	Prepend to body
+		$m.prependTo( 'body' )
+			.addClass( _c.menu );
 
-		//	Refactor label class
-		$('li.' + conf.labelClass, $m).removeClass( conf.labelClass ).addClass( _c.label );
+		if ( opts.position != 'left' )
+		{
+			$m.addClass( cls( opts.position ) );
+		}
+		if ( opts.zposition != 'back' )
+		{
+			$m.addClass( cls( opts.zposition ) );
+		}
+
+		//	Menu only
+		if ( opts.isMenu )
+		{
+			$m.addClass( _c.ismenu );
+
+			//	Refactor selected class
+			$('li.' + conf.selectedClass, $m).removeClass( conf.selectedClass ).addClass( _c.selected );
+	
+			//	Refactor label class
+			$('li.' + conf.labelClass, $m).removeClass( conf.labelClass ).addClass( _c.label );
+		}
 
 		return $m;
 	}
@@ -975,13 +1084,13 @@
 	
 						if ( $u.length )
 						{
-							$t.parent().addClass( _c.subopened ).addClass( _c.subopening );
+							$t.parent().addClass( _c.subopened );
 							$u.addClass( _c.opened );
 						}
 					}
 				)
 				.parent().addClass( _c.opened )
-				.parents( 'ul' ).addClass( _c.subopened ).addClass( _c.subopening );
+				.parents( 'ul' ).addClass( _c.subopened );
 
 			if ( !$('ul.' + _c.opened, $m).length )
 			{
@@ -989,7 +1098,7 @@
 			}
 
 			//	Rearrange markup
-			$('ul ul', $m).appendTo( $m );
+			$('ul ul', $m).appendTo( $m.find( '> .' + _c.inner ) );
 		}
 		else
 		{
@@ -1148,7 +1257,7 @@
 			{
 				id = uncls( id );
 			}
-			click( $('a[href="#' + id + '"]', $p),
+			click( $('a[href="#' + id + '"]'),
 				function()
 				{
 					$m.trigger( _e.toggle );
@@ -1160,11 +1269,11 @@
 		var id = $p.attr( 'id' );
 		if ( id && id.length )
 		{
-			click( $('a[href="#' + id + '"]', $p),
+			click( $('a[href="#' + id + '"]'),
 				function()
 				{
 					$m.trigger( _e.close );
-				}
+				}, false, true
 			);
 		}
 	}
@@ -1187,6 +1296,7 @@
 	{
 		var _scrollTop = findScrollTop();
 
+		$m.data( _d.opened, true );
 		$allMenus.not( $m ).trigger( _e.close );
 
 		//	store style and position
@@ -1199,16 +1309,36 @@
 		var _w = 0;
 		$wndw.off( _e.resize )
 			.on( _e.resize,
-				function( e )
+				function( e, force )
 				{
-					var nw = $wndw.width();
-					if ( nw != _w )
+					if ( $html.hasClass( _c.opened ) || force )
 					{
-						_w = nw;
-						$page.width( nw - $page.data( _d.offetLeft ) );
+						var nw = $wndw.width();
+						if ( nw != _w )
+						{
+							_w = nw;
+							$page.width( nw - $page.data( _d.offetLeft ) );
+						}
 					}
 				}
-			).trigger( _e.resize );
+			).trigger( _e.resize, [ true ] );
+
+		if ( $.fn.mmenu.useIphoneAddressbarFix() && _scrollTop > 20 )
+		{
+			$wndw.off( _e.scroll )
+				.on( _e.scroll,
+					function( e, force )
+					{
+						if ( $html.hasClass( _c.opened ) || force )
+						{
+							e.preventDefault();
+							e.stopImmediatePropagation();
+							window.scrollTo( 0, 1 );
+						}
+					}
+				);
+		}
+
 
 		//	prevent tabbing out of the menu
 		if ( c.preventTabbing )
@@ -1226,9 +1356,7 @@
 				);
 		}
 
-		//	open
-		$m.addClass( _c.opened );
-
+		//	add options
 		if ( c.hardwareAcceleration )
 		{
 			$html.addClass( _c.accelerated );
@@ -1237,16 +1365,28 @@
 		{
 			$html.addClass( _c.modal );
 		}
-		$html
-			.addClass( _c.opened )
-			.addClass( cls( o.position ) );
-
+		if ( o.position != 'left' )
+		{
+			$html.addClass( cls( o.position ) );
+		}
 		if ( o.zposition != 'back' )
 		{
 			$html.addClass( cls( o.zposition ) );
 		}
+		if ( o.moveBackground )
+		{
+			$html.addClass( _c.background );
+		}
+		
+		//	open
+		$html.addClass( _c.opened );
+		$m.addClass( _c.opened );
 
+		//	scroll page to scrolltop
 		$page.scrollTop( _scrollTop );
+		
+		//	scroll menu to top
+		$m.scrollTop( 0 );
 	}
 	function openMenu_finish( $m, o, c )
 	{
@@ -1258,6 +1398,11 @@
 				$m.trigger( _e.opened );
 			}, c.transitionDuration
 		);
+
+		if ( $.fn.mmenu.useIphoneAddressbarFix() && $page.data( _d.scrollTop ) > 20 )
+		{
+			window.scrollTo( 0, 1 );
+		}
 
 		//	opening
 		$html.addClass( _c.opening );
@@ -1274,13 +1419,17 @@
 				$html
 					.removeClass( _c.opened )
 					.removeClass( _c.modal )
+					.removeClass( _c.background )
 					.removeClass( _c.accelerated )
 					.removeClass( cls( o.position ) )
 					.removeClass( cls( o.zposition ) );
+				$wndw
+					.off( _e.resize )
+					.off( _e.scroll );
 
 				//	restore style and position
 				$page.attr( 'style', $page.data( _d.style ) );
-				$wndw.off( _e.resize );
+
 				if ( $scrollTopNode )
 				{
 					$scrollTopNode.scrollTop( $page.data( _d.scrollTop ) );
@@ -1295,29 +1444,27 @@
 		//	closing
 		$html.removeClass( _c.opening );
 		$wndw.off( _e.keydown );
+		$m.data( _d.opened, false );
 		$m.trigger( _e.closing );
 
 		return 'close';
 	}
 
-	function openSubmenuHorizontal( $submenu, o )
+	function openSubmenuHorizontal( $submenu, $m, o )
 	{
 		if ( $submenu.hasClass( _c.opened ) )
 		{
 			return false;
 		}
 
-		$body.scrollTop( 0 );
-		$html.scrollTop( 0 );
-
 		$submenu
-			.removeClass( _c.subopening )
+			.removeClass( _c.subopened )
 			.addClass( _c.opened );
-		
+
 		var $parent = $submenu.data( _d.parent );
 		if ( $parent )
 		{
-			$parent.parent().addClass( _c.subopening );
+			$parent.parent().addClass( _c.subopened );
 		}
 		return 'open';
 	}
@@ -1339,7 +1486,7 @@
 				}, c.transitionDuration
 			);
 
-			$parent.parent().removeClass( _c.subopening );
+			$parent.parent().removeClass( _c.subopened );
 		}
 		return 'close';
 	}
