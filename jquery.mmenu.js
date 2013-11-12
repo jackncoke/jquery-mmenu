@@ -1,5 +1,5 @@
 /*	
- *	jQuery mmenu 3.0.6
+ *	jQuery mmenu 3.1.4
  *	
  *	Copyright (c) 2013 Fred Heusschen
  *	www.frebsite.nl
@@ -58,7 +58,7 @@
 
 				//	INIT PAGE & MENU
 				$page = _initPage( $page, opts.configuration );
-				$menu = _initMenu( $menu, opts.position, opts.configuration );
+				$menu = _initMenu( $menu, opts.position, opts.zposition, opts.configuration );
 				$blck = _initBlocker( $blck, $menu, opts.configuration );
 
 				_initSubmenus( $menu, _direction, _serialnr );
@@ -67,7 +67,13 @@
 
 				$.fn.mmenu.counters( $menu, opts.counters, opts.configuration );
 				$.fn.mmenu.search( $menu, opts.searchfield, opts.configuration );
-				$.fn.mmenu.dragOpen( $menu, opts.dragOpen, opts.configuration );
+
+				//	For now: dragging open is only supported if the menu is "under" the page.
+				//	TODO: change dragging method to work with zposition "front" and "next".
+				if ( opts.zposition == 'back' )
+				{
+					$.fn.mmenu.dragOpen( $menu, opts.dragOpen, opts.configuration );
+				}
 
 
 				//	BIND EVENTS
@@ -177,7 +183,9 @@
 	};
 	$.fn.mmenu.defaults = {
 		position		: 'left',
+		zposition		: 'back',
 		slidingSubmenus	: true,
+		modal			: false,
 		onClick			: {
 			close				: true,
 			setSelected			: true,
@@ -445,11 +453,11 @@
 
 	$.fn.mmenu.dragOpen = function( $m, opts, conf )
 	{
+
 		if ( !$.fn.hammer )
 		{
 			return false;
 		}
-
 
 		//	Extend options
 		if ( typeof opts == 'boolean' )
@@ -463,7 +471,6 @@
 			opts = {};
 		}
 		opts = $.extend( true, {}, $.fn.mmenu.dragOpen.defaults, opts );
-
 
 		if ( opts.open )
 		{
@@ -518,8 +525,14 @@
 					break;
 			}
 
+			$dragNode = valueOrFn( opts.pageNode, $m, $page );
+			if ( typeof $dragNode == 'string' )
+			{
+				$dragNode = $($dragNode);
+			}
+
 			//	Bind events
-			$page
+			$dragNode
 				.hammer()
 				.on( drag.events + ' ' + _e.dragend,
 					function( e )
@@ -598,6 +611,7 @@
 	};
 	$.fn.mmenu.dragOpen.defaults = {
 		open		: false,
+//		pageNode	: null,
 		threshold	: 50
 	};
 
@@ -640,7 +654,12 @@
 		})(),
 
 		transition: (function() {
-			return 'transition' in document.createElement( 'div' ).style;
+			var s = document.createElement( 'div' ).style;
+		    if ( 'webkitTransition' in s )
+		    {
+		        return 'webkitTransition';  
+		    }
+		    return 'transition' in s;
 		})()
 	};
 
@@ -779,6 +798,7 @@
 			page				: cls( 'page' ),
 			blocker				: cls( 'blocker' ),
 			blocking			: cls( 'blocking' ),
+			modal				: cls( 'modal' ),
 			opened 				: cls( 'opened' ),
 			opening 			: cls( 'opening' ),
 			submenu				: cls( 'submenu' ),
@@ -854,7 +874,7 @@
 		return $p;
 	}
 
-	function _initMenu( $m, position, conf )
+	function _initMenu( $m, position, zposition, conf )
 	{
 		//	Strip whitespace
 		$m.contents().each(
@@ -889,6 +909,11 @@
 		$m.prependTo( 'body' )
 			.addClass( cls( 'menu' ) )
 			.addClass( cls( position ) );
+
+		if ( zposition != 'back' )
+		{
+			$m.addClass( cls( zposition ) );
+		}
 
 		//	Refactor selected class
 		$('li.' + conf.selectedClass, $m).removeClass( conf.selectedClass ).addClass( _c.selected );
@@ -984,7 +1009,10 @@
 		click( $b,
 			function()
 			{
-				$m.trigger( _e.close );
+				if ( !$html.hasClass( _c.modal ) )
+				{
+					$m.trigger( _e.close );
+				}
 			}, true, true
 		);
 		return $b;
@@ -1016,13 +1044,13 @@
 					href = $t.attr( 'href' );
 
 				//	set selected item
-				if ( boolOrFn( onClick.setSelected, $t ) )
+				if ( valueOrFn( onClick.setSelected, $t ) )
 				{
 					$t.parent().trigger( _e.setSelected );
 				}
 
 				//	block UI
-				if ( boolOrFn( onClick.blockUI, $t, href.slice( 0, 1 ) != '#' ) )
+				if ( valueOrFn( onClick.blockUI, $t, href.slice( 0, 1 ) != '#' ) )
 				{
 					$html.addClass( _c.blocking );
 				}
@@ -1030,10 +1058,10 @@
 				//	callback + loaction.href + close menu
 				var callback			= typeof onClick.callback == 'function',
 					callbackFn			= function() { onClick.callback.call( $t[ 0 ] ); }
-					close				= boolOrFn( onClick.close, $t ),
-					delayLocationHref	= boolOrFn( onClick.delayLocationHref, $t ),
-					setLocationHref 	= boolOrFn( onClick.setLocationHref, $t, href != '#' ),
-					setLocationHrefFn	= function() { window.location.href = href; };
+					close				= valueOrFn( onClick.close, $t ),
+					delayLocationHref	= valueOrFn( onClick.delayLocationHref, $t ),
+					setLocationHref 	= valueOrFn( onClick.setLocationHref, $t, href != '#' ),
+					setLocationHrefFn	= function() { window.location.href = $t[ 0 ].href; };
 
 				var closing = false;
 
@@ -1157,7 +1185,7 @@
 	}
 	function openMenu_setup( $m, o, c )
 	{
-				var _scrollTop = findScrollTop();
+		var _scrollTop = findScrollTop();
 
 		$allMenus.not( $m ).trigger( _e.close );
 
@@ -1205,9 +1233,18 @@
 		{
 			$html.addClass( _c.accelerated );
 		}
+		if ( o.modal )
+		{
+			$html.addClass( _c.modal );
+		}
 		$html
 			.addClass( _c.opened )
 			.addClass( cls( o.position ) );
+
+		if ( o.zposition != 'back' )
+		{
+			$html.addClass( cls( o.zposition ) );
+		}
 
 		$page.scrollTop( _scrollTop );
 	}
@@ -1234,9 +1271,12 @@
 			{
 				$m.removeClass( _c.opened );
 
-				$html.removeClass( _c.opened )
+				$html
+					.removeClass( _c.opened )
+					.removeClass( _c.modal )
+					.removeClass( _c.accelerated )
 					.removeClass( cls( o.position ) )
-					.removeClass( _c.accelerated );
+					.removeClass( cls( o.zposition ) );
 
 				//	restore style and position
 				$page.attr( 'style', $page.data( _d.style ) );
@@ -1339,7 +1379,12 @@
 
 	function transitionend( $e, fn, duration )
 	{
-		if ( $.fn.mmenu.support.transition )
+		var s = $.fn.mmenu.support.transition;
+	    if ( s == 'webkitTransition' )
+	    {
+	        $e.one( 'webkitTransitionEnd', fn );
+	    }
+		else if ( s )
 		{
 			$e.one( _e.transitionend, fn );
 		}
@@ -1360,11 +1405,11 @@
 		}
 		return val;
 	}
-	function boolOrFn( o, $e, d )
+	function valueOrFn( o, $e, d )
 	{
 		if ( typeof o == 'function' )
 		{
-			return o.call( $e );
+			return o.call( $e[ 0 ] );
 		}
 		if ( typeof o == 'undefined' && typeof d != 'undefined' )
 		{

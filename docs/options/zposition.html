@@ -10,12 +10,15 @@
 
 		<link type="text/css" rel="stylesheet" href="../docs.css" />
 		<link type="text/css" rel="stylesheet" href="../../mmenu.css" />
+		<link type="text/css" rel="stylesheet" href="../../mmenu-zposition.css" />
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 		<script type="text/javascript" src="../../jquery.mmenu.min.js"></script>
 		<script type="text/javascript">
 			$(function() {
-				$('nav#menu').mmenu();
+				$('nav#menu').mmenu({
+					zposition: 'front'
+				});
 			});
 		</script>
 	</head>
@@ -26,35 +29,27 @@
 				Options
 			</div>
 			<div id="content">
-				<h4>counters <small><em>(object)</em></small></h4>
-				<p>A map of options for the counters.</p>
-				<p>Possible values: an object, <code>true</code> or <code>false</code>.</p>
+				<h4>zposition <small><em>(string)</em></small></h4>
+				<p>The &quot;z-position&quot; of the menu.</p>
+				<p>Possible values: <code>&quot;back&quot;</code>, <code>&quot;front&quot;</code> or <code>&quot;next&quot;</code>.</p>
+				<p>Default value: <code>&quot;back&quot;</code>.</p>
 				<br />
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   counters: {
-      add   : false,
-      count : true
-   }
+   zposition: &quot;next&quot;
 });
 </pre>
 				<br />
-				<h5>counters.add <small><em>(boolean)</em></small></h5>
-				<p>Whether or not to automatically append a counter to each menu item that has a submenu.</p>
-				<p>Default value: <code>false</code>.</p>
-
-				<h5>counters.count <small><em>(boolean)</em></small></h5>
-				<p>Whether or not to automatically count the number of items in the submenu.</p>
-				<p>Default value: <code>true</code>.</p>
+				<p>Note: This option requires the mmenu-zposition.css file to be included in your webpage.</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="position.html">position</a></li>
-					<li><a href="zposition.html">zposition</a></li>
+					<li class="Selected"><a href="zposition.html">zposition</a></li>
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
 					<li><a href="modal.html">modal</a></li>
-					<li class="Selected"><a href="counters.html">counters</a></li>
+					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
 					<li><a href="dragopen.html">dragOpen</a></li>
 					<li><a href="onclick.html">onClick</a></li>

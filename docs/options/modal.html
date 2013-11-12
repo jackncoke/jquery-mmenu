@@ -26,35 +26,25 @@
 				Options
 			</div>
 			<div id="content">
-				<h4>counters <small><em>(object)</em></small></h4>
-				<p>A map of options for the counters.</p>
-				<p>Possible values: an object, <code>true</code> or <code>false</code>.</p>
+				<h4>modal <small><em>(boolean)</em></small></h4>
+				<p>Whether or not the menu should be opened as a &quot;modal&quot;.<br />
+					Basically, this means the user has no default way of closing the menu. You'll have to provide a close-button yourself.</p>
+				<p>Default value: <code>false</code>.</p>
 				<br />
 				<p>Code example:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   counters: {
-      add   : false,
-      count : true
-   }
+   modal: true
 });
 </pre>
-				<br />
-				<h5>counters.add <small><em>(boolean)</em></small></h5>
-				<p>Whether or not to automatically append a counter to each menu item that has a submenu.</p>
-				<p>Default value: <code>false</code>.</p>
-
-				<h5>counters.count <small><em>(boolean)</em></small></h5>
-				<p>Whether or not to automatically count the number of items in the submenu.</p>
-				<p>Default value: <code>true</code>.</p>
 			</div>
 			<nav id="menu">
 				<ul>
 					<li><a href="position.html">position</a></li>
 					<li><a href="zposition.html">zposition</a></li>
 					<li><a href="slidingsubmenus.html">slidingSubmenus</a></li>
-					<li><a href="modal.html">modal</a></li>
-					<li class="Selected"><a href="counters.html">counters</a></li>
+					<li class="Selected"><a href="modal.html">modal</a></li>
+					<li><a href="counters.html">counters</a></li>
 					<li><a href="searchfield.html">searchfield</a></li>
 					<li><a href="dragopen.html">dragOpen</a></li>
 					<li><a href="onclick.html">onClick</a></li>
