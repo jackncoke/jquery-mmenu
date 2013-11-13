@@ -44,12 +44,13 @@
 &lt;/body&gt;
 </pre>
 				<p>This <code>DIV</code> is best off without a width, padding, border and margin.</p>
-				<p>If you're using some other element than a <code>DIV</code>, for example a <code>SECTION</code>, you must specify this in the <code>configuration.pageNodetype</code> option:</p>
+				<p>If you're using some other element than a <code>DIV</code>, for example a <code>SECTION</code>, you must specify this in the <code>pageNodetype</code> option in the <code>configuration</code> object:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   configuration: {
-      pageNodetype: &quot;section&quot;
-   }
+   // options object
+}, {
+   // configuration object
+   pageNodetype: &quot;section&quot;
 });
 </pre>
 				<br />

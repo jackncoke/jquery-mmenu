@@ -38,12 +38,13 @@
    &lt;/ul&gt;
 &lt;/nav&gt;
 </pre>
-				<p>If you're using a different classname, for example <code>&quot;title&quot;</code>, you must specify this in the <code>configuration.labelClass</code> option:</p>
+				<p>If you're using a different classname, for example <code>&quot;title&quot;</code>, you must specify this in the <code>labelClass</code> option in the <code>configuration</code> object:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   configuration: {
-      labelClass: &quot;title&quot;
-   }
+    // options object
+}, {
+   // configuration object
+   labelClass: &quot;title&quot;
 });
 </pre>
 				<br />

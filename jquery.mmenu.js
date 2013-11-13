@@ -1,5 +1,5 @@
 /*	
- *	jQuery mmenu 3.2.6
+ *	jQuery mmenu 3.3.2
  *	
  *	Copyright (c) 2013 Fred Heusschen
  *	www.frebsite.nl
@@ -28,7 +28,7 @@
 	var _c, _e, _d;
 
 
-	$.fn.mmenu = function( o )
+	$.fn.mmenu = function( o, c )
 	{
 		//	First time plugin is fired
 		if ( !$wndw )
@@ -38,6 +38,7 @@
 
 		//	Extend options
 		o = extendOptions( o );
+		c = extendConfiguration( c );
 
 		return this.each(
 			function()
@@ -47,7 +48,8 @@
 				var $menu = $(this);
 				$allMenus = $allMenus.add( $menu );
 
-				var opts = extendOptions( o, $menu );
+				var opts = extendOptions( o, $menu ),
+					conf = c;
 
 				$menu
 					.data( _d.options, opts )
@@ -59,23 +61,23 @@
 
 
 				//	INIT PAGE & MENU
-				$page = _initPage( 			$page, opts.configuration );
-				$menu = _initMenu( 			$menu, opts, opts.configuration );
-				$blck = _initBlocker( 		$blck, $menu, opts.configuration );
+				$page = _initPage( 			$page, conf );
+				$menu = _initMenu( 			$menu, opts, conf );
+				$blck = _initBlocker( 		$blck, $menu, conf );
 
 				if ( opts.isMenu )
 				{
 					_initSubmenus( 			$menu, _direction, _serialnr );
-					_initLinks( 			$menu, opts.onClick, opts.configuration, opts.slidingSubmenus );
+					_initLinks( 			$menu, opts.onClick, conf, opts.slidingSubmenus );
 				}
-				_initOpenClose( 			$menu, $page, opts.configuration );
+				_initOpenClose( 			$menu, $page, conf );
 
 				if ( opts.isMenu )
 				{
-					$.fn.mmenu.counters( 	$menu, opts.counters, opts.configuration );
-					$.fn.mmenu.search( 		$menu, opts.searchfield, opts.configuration );
+					$.fn.mmenu.counters( 	$menu, opts.counters, conf );
+					$.fn.mmenu.search( 		$menu, opts.searchfield, conf );
 				}
-				$.fn.mmenu.dragOpen( 		$menu, opts.dragOpen, opts.configuration );
+				$.fn.mmenu.dragOpen( 		$menu, opts.dragOpen, conf );
 
 
 				//	BIND EVENTS
@@ -85,7 +87,6 @@
 					.on( _e.toggle + ' ' + _e.open + ' ' + _e.close,
 						function( e )
 						{
-							e.preventDefault();
 							e.stopPropagation();
 						}
 					);
@@ -106,7 +107,7 @@
 								e.stopImmediatePropagation();
 								return false;
 							}
-							return openMenu( $menu, opts, opts.configuration );
+							return openMenu( $menu, opts, conf );
 						}
 					)
 					.on( _e.close,
@@ -117,16 +118,16 @@
 								e.stopImmediatePropagation();
 								return false;
 							}
-							return closeMenu( $menu, opts, opts.configuration );
+							return closeMenu( $menu, opts, conf );
 						}
 					)
 					.off( _e.setPage )
 					.on( _e.setPage,
 						function( e, $p )
 						{
-							$page = _initPage( 		$p, opts.configuration );
-							_initOpenClose( 		$menu, $page, opts.configuration );
-							$.fn.mmenu.dragOpen( 	$menu, opts.dragOpen, opts.configuration );
+							$page = _initPage( 		$p, conf );
+							_initOpenClose( 		$menu, $page, conf );
+							$.fn.mmenu.dragOpen( 	$menu, opts.dragOpen, conf );
 						}
 					);
 
@@ -150,7 +151,7 @@
 						.on( _e.close,
 							function( e )
 							{
-								return closeSubmenuHorizontal( $(this), $menu, opts, opts.configuration );
+								return closeSubmenuHorizontal( $(this), $menu, opts, conf );
 							}
 						);
 				}
@@ -195,19 +196,19 @@
 //			callback			: null,
 //			setLocationHref		: null,
 			delayLocationHref	: true
-		},
-		configuration	: {
-			preventTabbing		: true,
-			hardwareAcceleration: true,
-			selectedClass		: 'Selected',
-			labelClass			: 'Label',
-			counterClass		: 'Counter',
-			pageNodetype		: 'div',
-			transitionDuration	: 400,
-			dragOpen			: {
-				pageMaxDistance		: 500,
-				pageMinVisible		: 65
-			}
+		}
+	};
+	$.fn.mmenu.configuration = {
+		preventTabbing		: true,
+		hardwareAcceleration: true,
+		selectedClass		: 'Selected',
+		labelClass			: 'Label',
+		counterClass		: 'Counter',
+		pageNodetype		: 'div',
+		transitionDuration	: 400,
+		dragOpen			: {
+			pageMaxDistance		: 500,
+			pageMinVisible		: 65
 		}
 	};
 
@@ -292,7 +293,6 @@
 				.on( _e.reset + ' ' + _e.search,
 					function( e )
 					{
-						e.preventDefault();
 						e.stopPropagation();
 					}
 				)
@@ -438,9 +438,8 @@
 						.on( _e.count,
 							function( e )
 							{
-								e.preventDefault();
 								e.stopPropagation();
-	
+
 								var $lis = $s.children()
 									.not( '.' + _c.label )
 									.not( '.' + _c.subtitle )
@@ -689,7 +688,7 @@
 				{
 					return true;
 				}
-				if( _oldAndroidBrowser )
+				if ( _oldAndroidBrowser )
 				{
 					return false;
 				}
@@ -777,7 +776,6 @@
 
 	//	Global vars
 	var _serialnr = 0,
-//		_useOverflowScrollingFallback = $.fn.mmenu.support.touch && !$.fn.mmenu.support.overflowscrolling && $.fn.mmenu.support.oldAndroidBrowser,
 		_useOverflowScrollingFallback = !$.fn.mmenu.support.overflowscrolling,
 		_useIphoneAddressbarFix = $.fn.mmenu.support.iPhoneAddressBar;
 
@@ -815,31 +813,6 @@
 		}
 
 
-		//	DEPRECATED
-		if ( typeof o.onClick != 'undefined' )
-		{
-			if ( typeof o.onClick.delayPageload != 'undefined' )
-			{
-				$.fn.mmenu.deprecated( 'onClick.delayPageload-option', 'onClick.delayLocationHref-option' );
-				o.onClick.delayLocationHref = o.onClick.delayPageload;
-			}
-			if ( typeof o.onClick.delayLocationHref == 'number' )
-			{
-				$.fn.mmenu.deprecated( 'a number for the onClick.delayLocationHref-option', 'true/false' );
-				o.onClick.delayLocationHref = ( o.onClick.delayLocationHref > 0 ) ? true : false;
-			}
-		}
-		if ( typeof o.configuration != 'undefined' )
-		{
-			if ( typeof o.configuration.slideDuration != 'undefined' )
-			{
-				$.fn.mmenu.deprecated( 'configuration.slideDuration-option', 'configuration.transitionDuration-option' );
-				o.configuration.transitionDuration = o.configuration.slideDuration;
-			}
-		}
-		//	/DEPRECATED
-
-
 		//	Extend onClick
 		if ( typeof o.onClick == 'boolean' )
 		{
@@ -857,12 +830,6 @@
 		o = $.extend( true, {}, $.fn.mmenu.defaults, o );
 
 
-		//	Set pageSelector
-		if ( typeof o.configuration.pageSelector != 'string' )
-		{
-			o.configuration.pageSelector = '> ' + o.configuration.pageNodetype;
-		}
-
 		//	Degration
 		if ( $.fn.mmenu.useOverflowScrollingFallback() )
 		{
@@ -877,6 +844,23 @@
 		}
 
 		return o;
+	}
+	function extendConfiguration( c )
+	{
+		if ( typeof c != 'object' )
+		{
+			c = {};
+		}
+
+		c = $.extend( true, {}, $.fn.mmenu.configuration, c )
+
+		//	Set pageSelector
+		if ( typeof c.pageSelector != 'string' )
+		{
+			c.pageSelector = '> ' + c.pageNodetype;
+		}
+
+		return c;
 	}
 
 	function _initPlugin()
@@ -1133,8 +1117,9 @@
 		var $lis = $('li', $m)
 			.off( _e.setSelected )
 			.on( _e.setSelected,
-				function()
+				function( e )
 				{
+					e.stopPropagation();
 					$lis.removeClass( _c.selected );
 					$(this).addClass( _c.selected );
 				}
@@ -1399,14 +1384,11 @@
 			}, c.transitionDuration
 		);
 
-		if ( $.fn.mmenu.useIphoneAddressbarFix() && $page.data( _d.scrollTop ) > 20 )
-		{
-			window.scrollTo( 0, 1 );
-		}
-
 		//	opening
 		$html.addClass( _c.opening );
 		$m.trigger( _e.opening );
+
+		window.scrollTo( 0, 1 );
 	}
 	function closeMenu( $m, o, c )
 	{
