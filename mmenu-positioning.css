@@ -134,11 +134,13 @@ html.mm-opened.mm-next .mm-page
 {
 	-webkit-transition: none 0.4s ease;
 	-moz-transition: none 0.4s ease;
+	-ms-transition: none 0.4s ease;
 	-o-transition: none 0.4s ease;
 	transition: none 0.4s ease;
 
 	-webkit-transition-property: top, right, bottom, left, margin, border-color, -webkit-transform;
 	-moz-transition-property: top, right, bottom, left, margin, border-color, -moz-transform;
+	-ms-transition-property: top, right, bottom, left, margin, border-color, -o-transform;
 	-o-transition-property: top, right, bottom, left, margin, border-color, -o-transform;
 	transition-property: top, right, bottom, left, margin, border-color, transform;
 }
@@ -147,6 +149,7 @@ html.mm-accelerated.mm-opening .mm-menu.mm-next
 {
 	-webkit-transform: translate3d( 0, 0, 1px );
 	-moz-transform: translate3d( 0, 0, 1px );
+	-ms-transform: translate3d( 0, 0, 1px );
 	-o-transform: translate3d( 0, 0, 1px );
 	transform: translate3d( 0, 0, 1px );
 }
@@ -243,6 +246,12 @@ html.mm-opening .mm-menu.mm-bottom.mm-next
 	margin: 0 0 -65px 0;
 	left: 0;
 	bottom: 0%;
+}
+
+
+html.mm-no-overflowscrolling.mm-right .mm-menu
+{
+	position: absolute;
 }
 
 

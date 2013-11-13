@@ -7,6 +7,7 @@ html.mm-opened #mm-blocker,
 {
 	-webkit-transition: none 0.4s ease;
 	-moz-transition: none 0.4s ease;
+	-ms-transition: none 0.4s ease;
 	-o-transition: none 0.4s ease;
 	transition: none 0.4s ease;
 }
@@ -14,6 +15,7 @@ html.mm-opened.mm-dragging .mm-page
 {
 	-webkit-transition-duration: 0s;
 	-moz-transition-duration: 0s;
+	-ms-transition-duration: 0s;
 	-o-transition-duration: 0s;
 	transition-duration: 0s;
 }
@@ -22,6 +24,7 @@ html.mm-opened.mm-dragging.mm-front .mm-menu
 {
 	-webkit-transition-duration: 0s;
 	-moz-transition-duration: 0s;
+	-ms-transition-duration: 0s;
 	-o-transition-duration: 0s;
 	transition-duration: 0s;
 }
@@ -32,6 +35,7 @@ html.mm-opened #mm-blocker
 	/* transform is needed to force hardware acceleration */
 	-webkit-transition-property: top, right, bottom, left, margin, border, -webkit-transform;
 	-moz-transition-property: top, right, bottom, left, margin, border, -moz-transform;
+	-ms-transition-property: top, right, bottom, left, margin, border, -ms-transform;
 	-o-transition-property: top, right, bottom, left, margin, border, -o-transform;
 	transition-property: top, right, bottom, left, margin, border, transform;
 	
@@ -46,6 +50,7 @@ html.mm-opening #mm-blocker
 {
 	-webkit-transition-property: margin-left;
 	-moz-transition-property: margin-left;
+	-ms-transition-property: margin-left;
 	-o-transition-property: margin-left;
 	transition-property: margin-left;
 }
@@ -56,6 +61,7 @@ html.mm-accelerated .mm-is-menu.mm-horizontal .mm-inner > ul.mm-subopened
 {
 	-webkit-transform: translate3d( 0, 0, 1px );
 	-moz-transform: translate3d( 0, 0, 1px );
+	-ms-transform: translate3d( 0, 0, 1px );
 	-o-transform: translate3d( 0, 0, 1px );
 	transform: translate3d( 0, 0, 1px );
 }
@@ -88,6 +94,7 @@ html.mm-opened .mm-page,
 {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 	-o-box-sizing: border-box;
 	box-sizing: border-box;
 }
@@ -261,14 +268,14 @@ html.mm-blocking #mm-blocker
 {
 	border-bottom-width: 0;
 }
-.mm-menu.mm-vertical li.mm-opened.mm-selected > a.mm-subopen + a,
-.mm-menu.mm-vertical li.mm-opened.mm-selected > a.mm-subopen + span
+.mm-menu.mm-vertical li.mm-selected > a.mm-subopen + a,
+.mm-menu.mm-vertical li.mm-selected > a.mm-subopen + span
 {
 	padding-right: 5px;
 	margin-right: 40px;
 }
-.mm-menu.mm-vertical li.mm-opened.mm-selected > em.mm-counter + a.mm-subopen + a,
-.mm-menu.mm-vertical li.mm-opened.mm-selected > em.mm-counter + a.mm-subopen + span
+.mm-menu.mm-vertical li.mm-selected > em.mm-counter + a.mm-subopen + a,
+.mm-menu.mm-vertical li.mm-selected > em.mm-counter + a.mm-subopen + span
 {
 	margin-right: 75px;
 }
@@ -455,6 +462,7 @@ html.mm-opened .mm-page
 
 	-webkit-transform: rotate( -45deg );
 	-moz-transform: rotate( -45deg );
+	-ms-transform: rotate( -45deg );
 	-o-transform: rotate( -45deg );
 	transform: rotate( -45deg );
 }
@@ -476,6 +484,7 @@ html.mm-opened .mm-page
 {
 	-webkit-transform: rotate( 45deg );
 	-moz-transform: rotate( 45deg );
+	-ms-transform: rotate( 45deg );
 	-o-transform: rotate( 45deg );
 	transform: rotate( 45deg );
 }
@@ -596,10 +605,6 @@ html.mm-no-overflowscrolling .mm-menu
 	position: relative;
 	left: auto;
 	top: auto;
-}
-html.mm-no-overflowscrolling.mm-right .mm-menu
-{
-	position: absolute;
 }
 
 

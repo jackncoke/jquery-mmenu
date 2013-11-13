@@ -31,6 +31,8 @@ body
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -47,6 +49,9 @@ html.mm-opening .mm-page
 
 .mm-menu
 {
+	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: auto;
 	position: fixed;
 	z-index: 0;
 	width: 30% !important;

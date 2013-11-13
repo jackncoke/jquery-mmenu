@@ -40,12 +40,13 @@
    &lt;/ul&gt;
 &lt;/nav&gt;
 </pre>
-				<p>If you're using a different classname, for example <code>&quot;bubble&quot;</code>, you must specify this in the <code>configuration.counterClass</code> option:</p>
+				<p>If you're using a different classname, for example <code>&quot;bubble&quot;</code>, you must specify this in the <code>counterClass</code> option in the <code>configuration</code> object:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   configuration: {
-      counterClass: &quot;bubble&quot;
-   }
+   // options object
+}, {
+   // configuration object
+   counterClass: &quot;bubble&quot;
 });
 </pre>
 				<br />

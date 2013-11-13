@@ -37,12 +37,13 @@
    &lt;/ul&gt;
 &lt;/nav&gt;
 </pre>
-				<p>If you're using a different classname, for example <code>&quot;active&quot;</code>, you must specify this in the <code>configuration.selectedClass</code> option:</p>
+				<p>If you're using a different classname, for example <code>&quot;active&quot;</code>, you must specify this in the <code>selectedClass</code> option in the <code>configuration</code> object:</p>
 <pre>
 $(&quot;#my-menu&quot;).mmenu({
-   configuration: {
-      selectedClass: &quot;active&quot;
-   }
+   // options object
+}, {
+   // configuration objects
+   selectedClass: &quot;active&quot;
 });
 </pre>
 				<br />
